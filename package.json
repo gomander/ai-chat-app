@@ -1,0 +1,30 @@
+{
+  "name": "chatbot",
+  "version": "0.0.1",
+  "description": "A work-in-progress simple and configurable chatbot app utilizing OpenAI, GoogleAI, and Anthropic APIs. Built with Svelte 5.",
+  "author": "Gunnar Omander <gunnar@gomander.dev>",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-node": "^5.0.1",
+    "@sveltejs/kit": "^2.5.4",
+    "@sveltejs/vite-plugin-svelte": "^3.0.2",
+    "@tailwindcss/vite": "4.0.0-alpha.10",
+    "svelte": "^5.0.0-next.82",
+    "svelte-check": "^3.6.8",
+    "tailwindcss": "4.0.0-alpha.10",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.6"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=8"
+  }
+}
