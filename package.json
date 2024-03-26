@@ -22,8 +22,8 @@
     "@sveltejs/adapter-node": "^5.0.1",
     "@sveltejs/kit": "^2.5.4",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
-    "@tailwindcss/typography": "~0.5.10",
     "@tailwindcss/forms": "~0.5.7",
+    "@tailwindcss/typography": "~0.5.10",
     "@types/node": "^20.11.30",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
@@ -39,5 +39,9 @@
   "bugs": {
     "url": "https://github.com/gomander/chatbot/issues",
     "email": "gunnar@gomander.dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.19.0",
+    "openai": "^4.29.2"
   }
 }

@@ -1,5 +1,5 @@
-import forms from '@tailwindcss/forms';
-import typography from '@tailwindcss/typography';
+import forms from '@tailwindcss/forms'
+import typography from '@tailwindcss/typography'
 import { skeleton } from '@skeletonlabs/tw-plugin'
 
 /** @type {import('tailwindcss').Config} */
