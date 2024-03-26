@@ -12,7 +12,7 @@ export async function generateAnthropicResponse(
 ): Promise<string> {
   const response = await anthropic.messages.create({
     model,
-    max_tokens: 512,
+    max_tokens: 256,
     system: systemPrompt,
     messages: [
       { role: Role.USER, content: 'Hello' },

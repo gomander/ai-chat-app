@@ -7,7 +7,7 @@
   } = $props()
 </script>
 
-<div class="px-4 py-2 rounded-lg w-fit max-w-96 {role}">
+<div class="px-4 py-2 rounded-lg w-fit max-w-prose {role}">
   {content}
 </div>
 
