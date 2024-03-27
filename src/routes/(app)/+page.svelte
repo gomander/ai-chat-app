@@ -1,9 +1,26 @@
-<script>
+<script lang="ts">
   import { enhance } from '$app/forms'
   import Message from '$lib/components/Message.svelte'
+  import type { EnhanceSubmitCallbackOptions, EnhanceSubmitOptions } from '$types/common'
 
   let { data, form } = $props()
   let messages = $derived(form?.messages || data.messages)
+  let api = $derived(form?.api || data.api)
+  let loading = $state(false)
+
+  async function submitFunction({ formData, cancel }: EnhanceSubmitOptions) {
+    if (loading) return
+    const newMessage = String(formData.get('newMessage') ?? '').trim()
+    if (newMessage.length < 2) {
+      cancel()
+      return
+    }
+    loading = true
+    return async ({ update }: EnhanceSubmitCallbackOptions) => {
+      loading = false
+      update()
+    }
+  }
 </script>
 
 <svelte:head>
@@ -18,10 +35,16 @@
   </div>
 
   <form
-    use:enhance
+    use:enhance={submitFunction}
     method="POST"
     class="flex gap-2"
   >
+    <input
+      type="hidden"
+      name="api"
+      value={api}
+    />
+
     <input
       type="hidden"
       name="oldMessages"
@@ -33,12 +56,15 @@
       name="newMessage"
       autocomplete="off"
       required
+      minlength="2"
       placeholder="Type a message"
+      disabled={loading}
       class="input"
     />
 
     <button
       type="submit"
+      disabled={loading}
       class="btn-icon variant-filled-primary"
     >
       <svg

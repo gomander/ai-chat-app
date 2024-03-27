@@ -1,3 +1,5 @@
+import type { ActionResult } from '@sveltejs/kit'
+
 export interface Message {
   role: RoleType
   content: string
@@ -28,3 +30,15 @@ export interface ApiResponseError {
 }
 
 export type ApiResponse<T> = ApiResponseSuccess<T> | ApiResponseError
+
+export interface EnhanceSubmitOptions {
+  formElement: HTMLFormElement
+  formData: FormData
+  action: URL
+  cancel: () => void
+}
+
+export interface EnhanceSubmitCallbackOptions {
+  result: ActionResult
+  update: () => void
+}

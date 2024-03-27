@@ -8,12 +8,10 @@ export async function POST({ request }) {
   const data = await request.json() as unknown
   try {
     assertData(data)
-    const response = data.api === Api.ANTHROPIC
-      ? await generateAnthropicResponse(data.messages, systemPrompt)
-      : await generateOpenaiResponse(data.messages, systemPrompt)
+    const message = await generateResponse(data.messages, systemPrompt, data.api)
     return new Response(JSON.stringify({
       success: true,
-      data: { message: response }
+      data: { message }
     }))
   } catch (e) {
     console.error(e)
@@ -30,4 +28,19 @@ function assertData(data: unknown): asserts data is { messages: Message[], api: 
   }
   assertMessages(data.messages)
   assertApi(data.api)
+}
+
+function generateResponse(
+  messages: Message[],
+  systemPrompt: string,
+  api: ApiType
+): Promise<string> {
+  switch (api) {
+    case Api.ANTHROPIC:
+      return generateAnthropicResponse(messages, systemPrompt)
+    case Api.OPENAI:
+      return generateOpenaiResponse(messages, systemPrompt)
+    default:
+      throw new Error('Invalid API')
+  }
 }

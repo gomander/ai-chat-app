@@ -1,19 +1,13 @@
-import { assertMessages } from '$lib/utils/common'
-import { Role, Api, type ApiResponse, type Message } from '$types/common'
-
-export function load(): { messages: Message[] } {
-  return {
-    messages: [
-      { role: Role.ASSISTANT, content: 'Hello! How can I help you today?' }
-    ]
-  }
-}
+import { assertApi, assertMessages } from '$lib/utils/common'
+import { Role, Api, type ApiResponse, type Message, type ApiType } from '$types/common'
 
 export const actions = {
-  default: async ({ request, fetch }): Promise<{ messages: Message[] }> => {
+  default: async ({ request, fetch }): Promise<{ messages: Message[], api: ApiType }> => {
     const formData = await request.formData()
-    const newMessage = String(formData.get('newMessage')).trim()
+    const newMessage = String(formData.get('newMessage') || '').trim()
+    const api = formData.get('api') || Api.ANTHROPIC
     try {
+      assertApi(api)
       const oldMessages = JSON.parse(String(formData.get('oldMessages') || '[]'))
       assertMessages(oldMessages)
       const messages: Message[] = [
@@ -24,7 +18,7 @@ export const actions = {
         '/api/chat/generate-response',
         {
           method: 'POST',
-          body: JSON.stringify({ messages, api: Api.ANTHROPIC }),
+          body: JSON.stringify({ messages, api })
         }
       )
       if (!response.ok) {
@@ -38,14 +32,16 @@ export const actions = {
         messages: [
           ...messages,
           { role: Role.ASSISTANT, content: data.data.message }
-        ]
+        ],
+        api
       }
     } catch (e) {
       return {
         messages: [
           { role: Role.USER, content: newMessage },
           { role: Role.ASSISTANT, content: 'Something went wrong! Please try again later.' }
-        ]
+        ],
+        api: Api.ANTHROPIC
       }
     }
   }
