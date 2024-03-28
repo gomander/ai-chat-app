@@ -8,6 +8,9 @@ dependencies:
   '@anthropic-ai/sdk':
     specifier: ^0.19.0
     version: 0.19.0
+  gpt-tokenizer:
+    specifier: ^2.1.2
+    version: 2.1.2
   openai:
     specifier: ^4.29.2
     version: 4.29.2
@@ -18,7 +21,7 @@ devDependencies:
     version: 2.9.0(svelte@5.0.0-next.85)
   '@skeletonlabs/tw-plugin':
     specifier: ~0.3.1
-    version: 0.3.1(tailwindcss@3.4.2)
+    version: 0.3.1(tailwindcss@3.4.3)
   '@sveltejs/adapter-node':
     specifier: ^5.0.1
     version: 5.0.1(@sveltejs/kit@2.5.4)
@@ -30,10 +33,10 @@ devDependencies:
     version: 3.0.2(svelte@5.0.0-next.85)(vite@5.2.6)
   '@tailwindcss/forms':
     specifier: ~0.5.7
-    version: 0.5.7(tailwindcss@3.4.2)
+    version: 0.5.7(tailwindcss@3.4.3)
   '@tailwindcss/typography':
     specifier: ~0.5.12
-    version: 0.5.12(tailwindcss@3.4.2)
+    version: 0.5.12(tailwindcss@3.4.3)
   '@types/node':
     specifier: ^20.11.30
     version: 20.11.30
@@ -50,8 +53,8 @@ devDependencies:
     specifier: ^3.6.8
     version: 3.6.8(postcss@8.4.38)(svelte@5.0.0-next.85)
   tailwindcss:
-    specifier: ^3.4.2
-    version: 3.4.2
+    specifier: ^3.4.3
+    version: 3.4.3
   tslib:
     specifier: ^2.6.2
     version: 2.6.2
@@ -554,12 +557,12 @@ packages:
       svelte: 5.0.0-next.85
     dev: true
 
-  /@skeletonlabs/tw-plugin@0.3.1(tailwindcss@3.4.2):
+  /@skeletonlabs/tw-plugin@0.3.1(tailwindcss@3.4.3):
     resolution: {integrity: sha512-DjjeOHN3HhFQf6gYPT2MUZMkIdw1jeB9mbuKC8etQxUlOR4XitfC7hssRWFJ8RJsvrrN0myCBbdWkVG1JVA96g==}
     peerDependencies:
       tailwindcss: '>=3.0.0'
     dependencies:
-      tailwindcss: 3.4.2
+      tailwindcss: 3.4.3
     dev: true
 
   /@sveltejs/adapter-node@5.0.1(@sveltejs/kit@2.5.4):
@@ -637,16 +640,16 @@ packages:
       - supports-color
     dev: true
 
-  /@tailwindcss/forms@0.5.7(tailwindcss@3.4.2):
+  /@tailwindcss/forms@0.5.7(tailwindcss@3.4.3):
     resolution: {integrity: sha512-QE7X69iQI+ZXwldE+rzasvbJiyV/ju1FGHH0Qn2W3FKbuYtqp8LKcy6iSw79fVUT5/Vvf+0XgLCeYVG+UV6hOw==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.4.2
+      tailwindcss: 3.4.3
     dev: true
 
-  /@tailwindcss/typography@0.5.12(tailwindcss@3.4.2):
+  /@tailwindcss/typography@0.5.12(tailwindcss@3.4.3):
     resolution: {integrity: sha512-CNwpBpconcP7ppxmuq3qvaCxiRWnbhANpY/ruH4L5qs2GCiVDJXde/pjj2HWPV1+Q4G9+V/etrwUYopdcjAlyg==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
@@ -655,7 +658,7 @@ packages:
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.2
+      tailwindcss: 3.4.3
     dev: true
 
   /@types/cookie@0.6.0:
@@ -1198,6 +1201,12 @@ packages:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
     dev: true
 
+  /gpt-tokenizer@2.1.2:
+    resolution: {integrity: sha512-HSuI5d6uey+c7x/VzQlPfCoGrfLyAc28vxWofKbjR9PJHm0AjQGSWkKw/OJnb+8S1g7nzgRsf0WH3dK+NNWYbg==}
+    dependencies:
+      rfc4648: 1.5.3
+    dev: false
+
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
     dev: true
@@ -1707,6 +1716,10 @@ packages:
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
 
+  /rfc4648@1.5.3:
+    resolution: {integrity: sha512-MjOWxM065+WswwnmNONOT+bD1nXzY9Km6u3kzvnx8F8/HXGZdz3T6e6vZJ8Q/RIMUSp/nxqjH3GwvJDy8ijeQQ==}
+    dev: false
+
   /rimraf@2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
     hasBin: true
@@ -1965,8 +1978,8 @@ packages:
       zimmerframe: 1.1.2
     dev: true
 
-  /tailwindcss@3.4.2:
-    resolution: {integrity: sha512-1kIzVecynNKMhhX8mPTOwTkkVHupUTMbEvk4n1ByxdM8sQTJ8fE41Y4TdORG6GmiVXHhfZ/++0hiIFJFwfadsA==}
+  /tailwindcss@3.4.3:
+    resolution: {integrity: sha512-U7sxQk/n397Bmx4JHbJx/iSOOv5G+II3f1kpLpY2QeUv5DcPdcTsYLlusZfq1NthHS1c1cZoyFmmkex1rzke0A==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:

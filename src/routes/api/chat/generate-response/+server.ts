@@ -9,10 +9,11 @@ export async function POST({ request }) {
   try {
     assertData(data)
     const message = await generateResponse(data.messages, systemPrompt, data.api)
-    return new Response(JSON.stringify({
-      success: true,
-      data: { message }
-    }))
+    return new Response(message, {
+      headers: {
+        'Content-Type': 'text/event-stream'
+      }
+    })
   } catch (e) {
     console.error(e)
     return new Response(JSON.stringify({
@@ -34,7 +35,7 @@ function generateResponse(
   messages: Message[],
   systemPrompt: string,
   api: ApiType
-): Promise<string> {
+): Promise<string | ReadableStream<Uint8Array>> {
   switch (api) {
     case Api.ANTHROPIC:
       return generateAnthropicResponse(messages, systemPrompt)

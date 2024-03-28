@@ -42,3 +42,7 @@ export interface EnhanceSubmitCallbackOptions {
   result: ActionResult
   update: () => void
 }
+
+export interface FormSubmitEvent extends SubmitEvent {
+  currentTarget: EventTarget & HTMLFormElement
+}

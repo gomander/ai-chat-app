@@ -1,10 +1,8 @@
-import { Role, Api, type Message } from '$types/common'
+import { Api, type Message, type ApiType } from '$types/common'
 
-export function load(): { messages: Message[], api: Api } {
+export function load(): { messages: Message[], api: ApiType } {
   return {
-    messages: [
-      { role: Role.ASSISTANT, content: 'Hello! How can I help you today?' }
-    ],
-    api: Api.ANTHROPIC
+    messages: [],
+    api: Api.OPENAI
   }
 }

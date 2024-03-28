@@ -2,10 +2,15 @@ import { assertApi, assertMessages } from '$lib/utils/common'
 import { Role, Api, type ApiResponse, type Message, type ApiType } from '$types/common'
 
 export const actions = {
-  default: async ({ request, fetch }): Promise<{ messages: Message[], api: ApiType }> => {
+  default: async ({ request, fetch }): Promise<{
+    messages: Message[],
+    api: ApiType,
+    stream?: ReadableStream<Uint8Array>
+  }> => {
     const formData = await request.formData()
     const newMessage = String(formData.get('newMessage') || '').trim()
     const api = formData.get('api') || Api.ANTHROPIC
+    const js = Boolean(formData.get('js'))
     try {
       assertApi(api)
       const oldMessages = JSON.parse(String(formData.get('oldMessages') || '[]'))
@@ -24,16 +29,19 @@ export const actions = {
       if (!response.ok) {
         throw new Error('Failed to generate response')
       }
-      const data = await response.json() as ApiResponse<{ message: string }>
-      if (!data.success) {
-        throw new Error(data.error)
+      if (!js) {
+        return {
+          messages: [
+            ...messages,
+            { role: Role.ASSISTANT, content: await response.text() }
+          ],
+          api
+        }
       }
       return {
-        messages: [
-          ...messages,
-          { role: Role.ASSISTANT, content: data.data.message }
-        ],
-        api
+        messages,
+        api,
+        stream: response.body ?? undefined
       }
     } catch (e) {
       return {

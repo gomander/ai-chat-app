@@ -1,25 +1,74 @@
 <script lang="ts">
-  import { enhance } from '$app/forms'
+  import { onMount } from 'svelte'
+  import { browser } from '$app/environment'
   import Message from '$lib/components/Message.svelte'
-  import type { EnhanceSubmitCallbackOptions, EnhanceSubmitOptions } from '$types/common'
+  import { assertMessages } from '$lib/utils/common'
+  import type { FormSubmitEvent } from '$types/common'
 
   let { data, form } = $props()
-  let messages = $derived(form?.messages || data.messages)
+  let messages = $state(form?.messages || data.messages)
   let api = $derived(form?.api || data.api)
   let loading = $state(false)
+  let answer = $state<string>('')
 
-  async function submitFunction({ formData, cancel }: EnhanceSubmitOptions) {
+  onMount(() => {
+    if (browser) {
+      try {
+        const storedMessages = JSON.parse(localStorage.getItem('messages') || '[]')
+        assertMessages(storedMessages)
+        messages = storedMessages
+      } catch (e) {}
+    }
+  })
+
+  $effect(() => {
+    if (browser && messages.length) {
+      localStorage.setItem('messages', JSON.stringify(messages))
+    }
+  })
+
+  async function onSubmit(e: FormSubmitEvent) {
+    e.preventDefault()
     if (loading) return
-    const newMessage = String(formData.get('newMessage') ?? '').trim()
+    const newMessage = String(e.currentTarget.newMessage.value ?? '').trim()
     if (newMessage.length < 2) {
-      cancel()
       return
     }
+    e.currentTarget.reset()
+    messages.push({ role: 'user', content: newMessage })
     loading = true
-    return async ({ update }: EnhanceSubmitCallbackOptions) => {
-      loading = false
-      update()
+    const response = await fetch('/api/chat/generate-response', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api, messages })
+    })
+    const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader()
+    while (reader) {
+      const { done, value } = await reader.read()
+      if (done) {
+        break
+      }
+      try {
+        const chunks = value.replace(
+          /}]}(.|\n)+?{/g, '}]}<new chunk>{'
+        ).replace(/\n$/, '').split('<new chunk>').map(
+          chunk => JSON.parse(chunk)
+        )
+        for (const chunk of chunks) {
+          const [{ delta }] = chunk.choices
+          if (delta.content) {
+            answer += delta.content
+          }
+        }
+      } catch (e) {
+        console.error(e)
+      }
     }
+    if (answer) {
+      messages.push({ role: 'assistant', content: answer })
+      answer = ''
+    }
+    loading = false
   }
 </script>
 
@@ -32,10 +81,13 @@
     {#each messages as message}
       <Message {...message} />
     {/each}
+    {#if answer}
+      <Message role="assistant" content={answer} />
+    {/if}
   </div>
 
   <form
-    use:enhance={submitFunction}
+    onsubmit={onSubmit}
     method="POST"
     class="flex gap-2"
   >
