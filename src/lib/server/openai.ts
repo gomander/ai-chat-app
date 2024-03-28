@@ -32,41 +32,21 @@ export async function generateOpenaiResponse(
   if (moderationResponse.results[0].flagged) {
     return 'Your message contains inappropriate content.'
   }
-  if (stream) {
-    return streamChatCompletion(messages, systemPrompt, model.name)
+  const config: OpenAi.Chat.Completions.ChatCompletionCreateParams = {
+    model: model.name,
+    messages: [{ role: 'system', content: systemPrompt }, ...messages]
   }
-  return getChatCompletion(messages, systemPrompt, model.name)
+  if (stream) {
+    return (await openai.chat.completions.create({
+      ...config,
+      stream: true
+    })).toReadableStream()
+  }
+  return (await openai.chat.completions.create(
+    config
+  )).choices[0].message.content || 'An error occurred, please try again later.'
 }
 
 function getTokens(input: string) {
   return encode(input).length
-}
-
-async function getChatCompletion(
-  messages: Message[],
-  systemPrompt: string,
-  model: string
-) {
-  return (await openai.chat.completions.create({
-    model,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      ...messages
-    ]
-  })).choices[0].message.content || 'An error occurred, please try again later.'
-}
-
-async function streamChatCompletion(
-  messages: Message[],
-  systemPrompt: string,
-  model: string
-) {
-  return (await openai.chat.completions.create({
-    model,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      ...messages
-    ],
-    stream: true
-  })).toReadableStream()
 }

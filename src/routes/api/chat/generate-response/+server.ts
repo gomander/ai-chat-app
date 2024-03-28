@@ -18,10 +18,7 @@ export async function POST({ request }) {
     })
   } catch (e) {
     console.error(e)
-    return new Response(JSON.stringify({
-      success: false,
-      error: getSafeError(e)
-    }))
+    return new Response(getSafeError(e))
   }
 }
 
