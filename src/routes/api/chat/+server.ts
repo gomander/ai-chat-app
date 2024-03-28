@@ -2,16 +2,16 @@ import { assertMessages, assertApi, getSafeError } from '$lib/utils/common'
 import { generateOpenaiResponse } from '$lib/server/openai'
 import { generateAnthropicResponse } from '$lib/server/anthropic'
 import systemPrompt from '$lib/data/system-prompts/default'
-import openaiModels from '$lib/data/models/openai'
 import anthropicModels from '$lib/data/models/anthropic'
-import { Api, type ApiType, type Message } from '$types/common'
+import openaiModels from '$lib/data/models/openai'
+import { Api, type ApiType, type Message, type Model } from '$types/common'
 
 export async function POST({ request }) {
   const data = await request.json() as unknown
   try {
     assertData(data)
     const message = await generateResponse(
-      data.messages, systemPrompt, data.api, data.stream
+      data.messages, systemPrompt, data.api, data.model, data.stream
     )
     return new Response(message, {
       headers: { 'Content-Type': 'text/event-stream' }
@@ -25,6 +25,7 @@ export async function POST({ request }) {
 function assertData(data: unknown): asserts data is {
   messages: Message[],
   api: ApiType,
+  model?: string,
   stream?: boolean
 } {
   if (
@@ -33,6 +34,7 @@ function assertData(data: unknown): asserts data is {
     !('messages' in data) ||
     !('api' in data) ||
     ('stream' in data && typeof data.stream !== 'boolean') ||
+    ('model' in data && typeof data.model !== 'string') ||
     ![2, 3, 4].includes(Object.keys(data).length)
   ) {
     throw new Error('Invalid data')
@@ -45,6 +47,7 @@ function generateResponse(
   messages: Message[],
   systemPrompt: string,
   api: ApiType,
+  model?: string,
   stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
   switch (api) {
@@ -52,14 +55,16 @@ function generateResponse(
       return generateAnthropicResponse(
         messages,
         systemPrompt,
-        anthropicModels['claude-3-haiku-20240307'],
+        // @ts-ignore
+        model ? anthropicModels[model] : anthropicModels.default,
         stream
       )
     case Api.OPENAI:
       return generateOpenaiResponse(
         messages,
         systemPrompt,
-        openaiModels['gpt-3.5-turbo'],
+        // @ts-ignore
+        model ? openaiModels[model] : openaiModels.default,
         stream
       )
     default:

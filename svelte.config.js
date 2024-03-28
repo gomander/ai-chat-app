@@ -7,8 +7,6 @@ export default {
 	vitePlugin: { inspector: true },
 	kit: {
     adapter: adapter(),
-    alias: {
-      '$types': 'src/types'
-    }
+    alias: { $types: 'src/types' }
   }
 }

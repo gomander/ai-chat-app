@@ -8,8 +8,10 @@
   let { data, form } = $props()
   let messages = $state(form?.messages || data.messages)
   let api = $derived(form?.api || data.api)
+  let model = $derived(form?.model || data.model)
   let loading = $state(false)
-  let answer = $state<string>('')
+  let answer = $state('')
+  let scrollToDiv: HTMLDivElement
 
   onMount(() => {
     if (browser) {
@@ -37,7 +39,8 @@
     e.currentTarget.reset()
     messages.push({ role: 'user', content: newMessage })
     loading = true
-    const response = await fetch('/api/chat/generate-response', {
+    scrollToBottom()
+    const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ api, messages })
@@ -69,6 +72,13 @@
       answer = ''
     }
     loading = false
+    scrollToBottom()
+  }
+
+  function scrollToBottom() {
+    setTimeout(() => {
+      scrollToDiv.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+    }, 100)
   }
 </script>
 
@@ -76,14 +86,15 @@
   <title>Chatbot</title>
 </svelte:head>
 
-<div class="flex-1 flex flex-col gap-2 md:gap-4 h-px">
-  <div class="flex-1 flex flex-col gap-2 overflow-y-scroll p-2">
+<div class="flex-1 flex flex-col gap-2 md:gap-4 h-px w-full max-w-3xl mx-auto">
+  <div class="flex-1 flex flex-col gap-2 overflow-y-scroll">
     {#each messages as message}
       <Message {...message} />
     {/each}
     {#if answer}
       <Message role="assistant" content={answer} />
     {/if}
+    <div bind:this={scrollToDiv} />
   </div>
 
   <form
@@ -95,6 +106,12 @@
       type="hidden"
       name="api"
       value={api}
+    />
+
+    <input
+      type="hidden"
+      name="model"
+      value={model}
     />
 
     <input

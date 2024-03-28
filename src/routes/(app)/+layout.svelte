@@ -2,8 +2,8 @@
   let { children } = $props()
 </script>
 
-<div class="h-screen grid grid-cols-[auto_1fr] grid-rows-[auto_1fr]">
-  <header class="flex gap-4 items-center variant-filled-secondary p-4 col-span-2">
+<div class="h-screen grid grid-rows-[auto_1fr]">
+  <header class="flex gap-4 items-center variant-filled-secondary p-4">
     <button class="btn-icon variant-filled-primary">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +18,7 @@
     <h1 class="text-2xl">Chatbot</h1>
   </header>
 
-  <nav class="variant-filled-surface w-64">
+  <!-- <nav class="variant-filled-surface w-64">
     <ul class="flex flex-col gap-2 p-2 md:p-4">
       <li>
         <a href="/">Home</a>
@@ -27,7 +27,7 @@
         <a href="/about">About</a>
       </li>
     </ul>
-  </nav>
+  </nav> -->
 
   <main class="flex flex-col p-2 md:p-4 min-h-px">
     {@render children()}

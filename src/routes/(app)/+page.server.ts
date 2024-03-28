@@ -1,22 +1,24 @@
-import { assertMessages, getSafeApi } from '$lib/utils/common'
+import anthropicModels from '$lib/data/models/anthropic'
+import { assertMessages, getSafeApi, getSafeModel } from '$lib/utils/common'
 import { Role, Api, type Message, type ApiType } from '$types/common'
 
 export const actions = {
   default: async ({ request, fetch }): Promise<{
     messages: Message[],
-    api: ApiType
+    api: ApiType,
+    model: string
   }> => {
     const formData = await request.formData()
     const newMessage = String(formData.get('newMessage') || '').trim()
     const api = getSafeApi(formData.get('api'))
+    const model = getSafeModel(String(formData.get('model')), api)
     try {
       const oldMessages = JSON.parse(String(formData.get('oldMessages') || '[]'))
       assertMessages(oldMessages)
       const messages: Message[] = [
-        ...oldMessages,
-        { role: Role.USER, content: newMessage }
+        ...oldMessages, { role: Role.USER, content: newMessage }
       ]
-      const response = await fetch('/api/chat/generate-response', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         body: JSON.stringify({ messages, api, stream: false })
       })
@@ -24,14 +26,15 @@ export const actions = {
         throw new Error('Failed to generate response')
       }
       messages.push({ role: Role.ASSISTANT, content: await response.text() })
-      return { messages, api }
+      return { messages, api, model }
     } catch (e) {
       return {
         messages: [
           { role: Role.USER, content: newMessage },
           { role: Role.ASSISTANT, content: 'Something went wrong! Please try again later.' }
         ],
-        api: Api.ANTHROPIC
+        api: Api.ANTHROPIC,
+        model: anthropicModels.default.name
       }
     }
   }

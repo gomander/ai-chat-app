@@ -13,10 +13,10 @@
 
 <style lang="postcss">
   .user {
-    @apply variant-filled-primary text-right self-end;
+    @apply variant-filled-primary text-right self-end rounded-tr-none;
   }
 
   .assistant {
-    @apply variant-filled-secondary;
+    @apply variant-filled-secondary rounded-tl-none;
   }
 </style>

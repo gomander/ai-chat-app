@@ -1,8 +1,10 @@
-import { Api, type Message, type ApiType } from '$types/common'
+import openaiModels from '$lib/data/models/openai'
+import { Api } from '$types/common'
 
-export function load(): { messages: Message[], api: ApiType } {
+export function load() {
   return {
     messages: [],
-    api: Api.OPENAI
+    api: Api.OPENAI,
+    model: openaiModels.default.name
   }
 }
