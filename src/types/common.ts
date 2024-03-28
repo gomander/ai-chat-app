@@ -1,5 +1,3 @@
-import type { ActionResult } from '@sveltejs/kit'
-
 export interface Message {
   role: RoleType
   content: string
@@ -19,17 +17,10 @@ export enum Api {
   OPENAI = 'openai'
 }
 
-export interface ApiResponseSuccess<T> {
-  success: true
-  data: T
+export interface Model {
+  name: string
+  contextWindow: number
 }
-
-export interface ApiResponseError {
-  success: false
-  error: string
-}
-
-export type ApiResponse<T> = ApiResponseSuccess<T> | ApiResponseError
 
 export interface FormSubmitEvent extends SubmitEvent {
   currentTarget: EventTarget & HTMLFormElement
