@@ -10,13 +10,14 @@ const openai = new OpenAi({ apiKey: OPENAI_API_KEY })
 export async function generateOpenaiResponse(
   messages: Message[],
   systemPrompt = defaultSystemPrompt,
-  model = models['gpt-3.5-turbo']
+  model = models['gpt-3.5-turbo'],
+  stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
   let tokens = getTokens(systemPrompt)
   for (const message of messages) {
     const currentMessageTokens = getTokens(message.content)
     if (currentMessageTokens > model.contextWindow) {
-      throw new Error('Your message is too long. Please shorten it and try again.')
+      throw new Error('Your message is too long.')
     }
     tokens += currentMessageTokens
   }
@@ -29,19 +30,43 @@ export async function generateOpenaiResponse(
     input: messages.at(-1)?.content || ''
   })
   if (moderationResponse.results[0].flagged) {
-    return 'Your message contains inappropriate content. Please remove it and try again.'
+    return 'Your message contains inappropriate content.'
   }
-  const stream = openai.beta.chat.completions.stream({
-    model: model.name,
+  if (stream) {
+    return streamChatCompletion(messages, systemPrompt, model.name)
+  }
+  return getChatCompletion(messages, systemPrompt, model.name)
+}
+
+function getTokens(input: string) {
+  return encode(input).length
+}
+
+async function getChatCompletion(
+  messages: Message[],
+  systemPrompt: string,
+  model: string
+) {
+  return (await openai.chat.completions.create({
+    model,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...messages
+    ]
+  })).choices[0].message.content || 'An error occurred, please try again later.'
+}
+
+async function streamChatCompletion(
+  messages: Message[],
+  systemPrompt: string,
+  model: string
+) {
+  return (await openai.chat.completions.create({
+    model,
     messages: [
       { role: 'system', content: systemPrompt },
       ...messages
     ],
     stream: true
-  })
-  return stream.toReadableStream()
-}
-
-export function getTokens(input: string) {
-  return encode(input).length
+  })).toReadableStream()
 }

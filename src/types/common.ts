@@ -31,18 +31,6 @@ export interface ApiResponseError {
 
 export type ApiResponse<T> = ApiResponseSuccess<T> | ApiResponseError
 
-export interface EnhanceSubmitOptions {
-  formElement: HTMLFormElement
-  formData: FormData
-  action: URL
-  cancel: () => void
-}
-
-export interface EnhanceSubmitCallbackOptions {
-  result: ActionResult
-  update: () => void
-}
-
 export interface FormSubmitEvent extends SubmitEvent {
   currentTarget: EventTarget & HTMLFormElement
 }

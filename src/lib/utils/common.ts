@@ -35,6 +35,10 @@ export function assertApi(api: any): asserts api is ApiType {
   }
 }
 
+export function getSafeApi(api: any): ApiType {
+  return Object.values(Api).includes(api) ? api as ApiType : Api.ANTHROPIC
+}
+
 export function getSafeError(error: unknown): string {
   return error instanceof Error ? error.message : 'An error occurred'
 }
