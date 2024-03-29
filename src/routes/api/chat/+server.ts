@@ -4,7 +4,7 @@ import { generateAnthropicResponse } from '$lib/server/anthropic'
 import systemPrompt from '$lib/data/system-prompts/default'
 import anthropicModels from '$lib/data/models/anthropic'
 import openaiModels from '$lib/data/models/openai'
-import { Api, type ApiType, type Message, type Model } from '$types/common'
+import { Api, type ApiType, type Message } from '$types/common'
 
 export async function POST({ request }) {
   const data = await request.json() as unknown

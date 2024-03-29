@@ -1,13 +1,10 @@
 import anthropicModels from '$lib/data/models/anthropic'
 import { assertMessages, getSafeApi, getSafeModel } from '$lib/utils/common'
-import { Role, Api, type Message, type ApiType } from '$types/common'
+import { Role, Api, type Message } from '$types/common'
+import type { LoadData } from './types'
 
 export const actions = {
-  default: async ({ request, fetch }): Promise<{
-    messages: Message[],
-    api: ApiType,
-    model: string
-  }> => {
+  default: async ({ request, fetch }): Promise<LoadData> => {
     const formData = await request.formData()
     const newMessage = String(formData.get('newMessage') || '').trim()
     const api = getSafeApi(formData.get('api'))
