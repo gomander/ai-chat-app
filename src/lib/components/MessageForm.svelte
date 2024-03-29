@@ -13,7 +13,7 @@
 <form
   onsubmit={onSubmit}
   method="POST"
-  class="flex gap-2"
+  class="flex gap-2 mx-2"
 >
   <input
     type="hidden"
@@ -47,7 +47,7 @@
   <button
     type="submit"
     {disabled}
-    class="btn-icon variant-filled-primary"
+    class="btn-icon variant-filled-primary flex-shrink-0"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"

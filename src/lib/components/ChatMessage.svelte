@@ -7,16 +7,52 @@
   } = $props()
 </script>
 
-<div class="px-4 py-2 rounded-lg w-fit max-w-prose {role}">
-  {content}
+<div class="relative wrapper-{role}">
+  <div class="px-4 py-2 mx-2 rounded-lg max-w-prose message message-{role}">
+    {content}
+  </div>
 </div>
 
 <style lang="postcss">
-  .user {
-    @apply variant-filled-primary text-right self-end rounded-tr-none;
+  .wrapper-user {
+    align-self: flex-end;
   }
 
-  .assistant {
-    @apply variant-filled-secondary rounded-tl-none;
+  .message {
+    overflow-wrap: anywhere;
+  }
+
+  .message::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0;
+    bottom: auto;
+    border: 0.5rem solid;
+  }
+
+  .message-user {
+    background-color: rgb(var(--color-primary-500));
+    color: rgb(var(--on-primary));
+    border-top-right-radius: 0;
+  }
+
+  .message-user::after {
+    left: auto;
+    right: 0;
+    border-color: rgb(var(--color-primary-500)) transparent transparent;
+  }
+
+  .message-assistant {
+    background-color: rgb(var(--color-surface-500));
+    color: rgb(var(--on-surface));
+    border-top-left-radius: 0;
+  }
+
+  .message-assistant::after {
+    left: 0;
+    right: auto;
+    border-color: rgb(var(--color-surface-500)) transparent transparent;
   }
 </style>
