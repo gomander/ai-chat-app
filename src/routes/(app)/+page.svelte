@@ -72,8 +72,8 @@
   <title>Chatbot</title>
 </svelte:head>
 
-<div class="flex-1 flex flex-col gap-2 md:gap-4 h-px w-full max-w-3xl mx-auto">
-  <div class="flex-1 flex flex-col gap-2 overflow-y-scroll">
+<div class="flex-1 flex flex-col h-px w-full max-w-3xl mx-auto">
+  <div class="flex-1 flex flex-col gap-2 overflow-y-scroll py-2 -mx-2">
     {#each messages as message}
       <ChatMessage {...message} />
     {/each}

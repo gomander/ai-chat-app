@@ -13,7 +13,7 @@
 <form
   onsubmit={onSubmit}
   method="POST"
-  class="flex gap-2 mx-2"
+  class="flex gap-2"
 >
   <input
     type="hidden"
