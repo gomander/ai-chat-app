@@ -1,3 +1,4 @@
+import { DEFAULT_API } from '$lib/data/constants'
 import { Role, Api } from '$types/common'
 import type { Message, RoleType, ApiType } from '$types/common'
 
@@ -37,7 +38,7 @@ export function assertApi(api: any): asserts api is ApiType {
 }
 
 export function getSafeApi(api: any): ApiType {
-  return Object.values(Api).includes(api) ? api as ApiType : Api.OPENAI
+  return Object.values(Api).includes(api) ? api as ApiType : DEFAULT_API
 }
 
 export function getSafeError(error: unknown): string {

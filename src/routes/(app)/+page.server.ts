@@ -1,6 +1,7 @@
 import models from '$lib/data/models'
 import { assertMessages, getSafeApi } from '$lib/utils/common'
-import { Role, Api, type Message } from '$types/common'
+import { DEFAULT_API } from '$lib/data/constants'
+import { Role, type Message } from '$types/common'
 import type { LoadData } from './types'
 
 export const actions = {
@@ -30,7 +31,7 @@ export const actions = {
           { role: Role.USER, content: newMessage },
           { role: Role.ASSISTANT, content: 'Something went wrong! Please try again later.' }
         ],
-        api: Api.OPENAI,
+        api: DEFAULT_API,
         model
       }
     }
