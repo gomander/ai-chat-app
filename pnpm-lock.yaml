@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   '@anthropic-ai/sdk':
-    specifier: ^0.19.0
-    version: 0.19.0
+    specifier: ^0.19.1
+    version: 0.19.1
   gpt-tokenizer:
     specifier: ^2.1.2
     version: 2.1.2
   openai:
-    specifier: ^4.30.0
-    version: 4.30.0
+    specifier: ^4.31.0
+    version: 4.31.0
 
 devDependencies:
   '@skeletonlabs/skeleton':
@@ -38,8 +38,8 @@ devDependencies:
     specifier: ~0.5.12
     version: 0.5.12(tailwindcss@3.4.3)
   '@types/node':
-    specifier: ^20.11.30
-    version: 20.11.30
+    specifier: ^20.12.2
+    version: 20.12.2
   autoprefixer:
     specifier: ^10.4.19
     version: 10.4.19(postcss@8.4.38)
@@ -63,7 +63,7 @@ devDependencies:
     version: 5.4.3
   vite:
     specifier: ^5.2.7
-    version: 5.2.7(@types/node@20.11.30)
+    version: 5.2.7(@types/node@20.12.2)
   vite-plugin-tailwind-purgecss:
     specifier: ~0.2.0
     version: 0.2.0(vite@5.2.7)
@@ -83,8 +83,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
-  /@anthropic-ai/sdk@0.19.0:
-    resolution: {integrity: sha512-mv4JtBGLKtpi7XK6Car2Tb+xwdgOuaMtRxxJoO27tqFESgGWdlxSWU65ntjIXAFFLABbRCtVFsnXTBS1AlF6NQ==}
+  /@anthropic-ai/sdk@0.19.1:
+    resolution: {integrity: sha512-u9i8yN8wAr/ujaXSRjfYXiYzhCk2mdUG6G9y5IAKEAPJHwFTrEyf76Z4V1LqqFbDBlZqm0tkoMMpU8tmp65ocA==}
     dependencies:
       '@types/node': 18.19.26
       '@types/node-fetch': 2.6.11
@@ -601,7 +601,7 @@ packages:
       sirv: 2.0.4
       svelte: 5.0.0-next.89
       tiny-glob: 0.2.9
-      vite: 5.2.7(@types/node@20.11.30)
+      vite: 5.2.7(@types/node@20.12.2)
     dev: true
 
   /@sveltejs/vite-plugin-svelte-inspector@2.0.0(@sveltejs/vite-plugin-svelte@3.0.2)(svelte@5.0.0-next.89)(vite@5.2.7):
@@ -615,7 +615,7 @@ packages:
       '@sveltejs/vite-plugin-svelte': 3.0.2(svelte@5.0.0-next.89)(vite@5.2.7)
       debug: 4.3.4
       svelte: 5.0.0-next.89
-      vite: 5.2.7(@types/node@20.11.30)
+      vite: 5.2.7(@types/node@20.12.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -634,7 +634,7 @@ packages:
       magic-string: 0.30.8
       svelte: 5.0.0-next.89
       svelte-hmr: 0.15.3(svelte@5.0.0-next.89)
-      vite: 5.2.7(@types/node@20.11.30)
+      vite: 5.2.7(@types/node@20.12.2)
       vitefu: 0.2.5(vite@5.2.7)
     transitivePeerDependencies:
       - supports-color
@@ -672,7 +672,7 @@ packages:
   /@types/node-fetch@2.6.11:
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 20.12.2
       form-data: 4.0.0
     dev: false
 
@@ -682,8 +682,8 @@ packages:
       undici-types: 5.26.5
     dev: false
 
-  /@types/node@20.11.30:
-    resolution: {integrity: sha512-dHM6ZxwlmuZaRmUPfv1p+KrdD1Dci04FbdEm/9wEMouFqxYoFl5aMkt0VMAUtYRQDyYvD41WJLukhq/ha3YuTw==}
+  /@types/node@20.12.2:
+    resolution: {integrity: sha512-zQ0NYO87hyN6Xrclcqp7f8ZbXNbRfoGWNcMvHTPQp9UUrwI0mI7XBz+cu7/W6/VClYo2g63B0cjull/srU7LgQ==}
     dependencies:
       undici-types: 5.26.5
 
@@ -1527,8 +1527,8 @@ packages:
       wrappy: 1.0.2
     dev: true
 
-  /openai@4.30.0:
-    resolution: {integrity: sha512-jOaT4u7DpWzvuOuSxw5skuBbSuagw91Vd4IU/zP9qdgu6C19AAq4wzx+24e59wdEmsAG58enOUNf6t5V2WwN9g==}
+  /openai@4.31.0:
+    resolution: {integrity: sha512-JebkRnRGEGLnJt3+bJ5B7au8nBeZvJjs9baVxDmUZ5+BgafAdy6KDxJGSuyaw/IA+ErqY3jmOH5cDC2mCDJF2w==}
     hasBin: true
     dependencies:
       '@types/node': 18.19.26
@@ -2084,10 +2084,10 @@ packages:
     dependencies:
       estree-walker: 3.0.3
       purgecss: 6.0.0-alpha.0
-      vite: 5.2.7(@types/node@20.11.30)
+      vite: 5.2.7(@types/node@20.12.2)
     dev: true
 
-  /vite@5.2.7(@types/node@20.11.30):
+  /vite@5.2.7(@types/node@20.12.2):
     resolution: {integrity: sha512-k14PWOKLI6pMaSzAuGtT+Cf0YmIx12z9YGon39onaJNy8DLBfBJrzg9FQEmkAM5lpHBZs9wksWAsyF/HkpEwJA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -2115,7 +2115,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 20.12.2
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.13.0
@@ -2131,7 +2131,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 5.2.7(@types/node@20.11.30)
+      vite: 5.2.7(@types/node@20.12.2)
     dev: true
 
   /web-streams-polyfill@3.3.3:
