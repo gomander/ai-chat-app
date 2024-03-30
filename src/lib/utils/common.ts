@@ -1,6 +1,5 @@
-import anthropicModels from '$lib/data/models/anthropic'
-import openaiModels from '$lib/data/models/openai'
-import { Role, Api, type Message, type RoleType, type ApiType } from '$types/common'
+import { Role, Api } from '$types/common'
+import type { Message, RoleType, ApiType } from '$types/common'
 
 export function assertMessages(messages: unknown): asserts messages is Message[] {
   if (!Array.isArray(messages)) {
@@ -38,20 +37,7 @@ export function assertApi(api: any): asserts api is ApiType {
 }
 
 export function getSafeApi(api: any): ApiType {
-  return Object.values(Api).includes(api) ? api as ApiType : Api.ANTHROPIC
-}
-
-export function getSafeModel(model: string, api: ApiType): string {
-  switch (api) {
-    case Api.ANTHROPIC:
-      // @ts-ignore
-      return anthropicModels[model]?.name || anthropicModels.default.name
-    case Api.OPENAI:
-      // @ts-ignore
-      return openaiModels[model]?.name || openaiModels.default.name
-    default:
-      return anthropicModels.default.name
-  }
+  return Object.values(Api).includes(api) ? api as ApiType : Api.OPENAI
 }
 
 export function getSafeError(error: unknown): string {

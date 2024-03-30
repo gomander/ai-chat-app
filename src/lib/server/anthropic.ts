@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { ANTHROPIC_API_KEY } from '$env/static/private'
+import models from '$lib/data/models'
 import defaultSystemPrompt from '$lib/data/system-prompts/default'
-import anthropicModels from '$lib/data/models/anthropic'
 import type { Message } from '$types/common'
 
 const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY })
@@ -9,7 +9,7 @@ const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY })
 export async function generateAnthropicResponse(
   messages: Message[],
   systemPrompt = defaultSystemPrompt,
-  model = anthropicModels['claude-3-haiku-20240307'],
+  model = models.anthropic.default,
   stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
   const config = {

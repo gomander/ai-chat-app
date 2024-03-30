@@ -1,8 +1,8 @@
 import OpenAi from 'openai'
 import { encode } from 'gpt-tokenizer'
 import { OPENAI_API_KEY } from '$env/static/private'
+import models from '$lib/data/models'
 import defaultSystemPrompt from '$lib/data/system-prompts/default'
-import models from '$lib/data/models/openai'
 import type { Message } from '$types/common'
 
 const openai = new OpenAi({ apiKey: OPENAI_API_KEY })
@@ -10,7 +10,7 @@ const openai = new OpenAi({ apiKey: OPENAI_API_KEY })
 export async function generateOpenaiResponse(
   messages: Message[],
   systemPrompt = defaultSystemPrompt,
-  model = models['gpt-3.5-turbo'],
+  model = models.openai.default,
   stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
   let tokens = getTokens(systemPrompt)

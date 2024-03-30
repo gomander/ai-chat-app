@@ -1,5 +1,5 @@
-import anthropicModels from '$lib/data/models/anthropic'
-import { assertMessages, getSafeApi, getSafeModel } from '$lib/utils/common'
+import models from '$lib/data/models'
+import { assertMessages, getSafeApi } from '$lib/utils/common'
 import { Role, Api, type Message } from '$types/common'
 import type { LoadData } from './types'
 
@@ -8,7 +8,7 @@ export const actions = {
     const formData = await request.formData()
     const newMessage = String(formData.get('newMessage') || '').trim()
     const api = getSafeApi(formData.get('api'))
-    const model = getSafeModel(String(formData.get('model')), api)
+    const model = (models[api][String(formData.get('model'))] || models[api].default).name
     try {
       const oldMessages = JSON.parse(String(formData.get('oldMessages') || '[]'))
       assertMessages(oldMessages)
@@ -30,8 +30,8 @@ export const actions = {
           { role: Role.USER, content: newMessage },
           { role: Role.ASSISTANT, content: 'Something went wrong! Please try again later.' }
         ],
-        api: Api.ANTHROPIC,
-        model: anthropicModels.default.name
+        api: Api.OPENAI,
+        model
       }
     }
   }

@@ -1,9 +1,8 @@
 import { assertMessages, assertApi, getSafeError } from '$lib/utils/common'
 import { generateOpenaiResponse } from '$lib/server/openai'
 import { generateAnthropicResponse } from '$lib/server/anthropic'
+import models from '$lib/data/models'
 import systemPrompt from '$lib/data/system-prompts/default'
-import anthropicModels from '$lib/data/models/anthropic'
-import openaiModels from '$lib/data/models/openai'
 import { Api, type ApiType, type Message } from '$types/common'
 
 export async function POST({ request }) {
@@ -29,13 +28,12 @@ function assertData(data: unknown): asserts data is {
   stream?: boolean
 } {
   if (
-    !data ||
-    typeof data !== 'object' ||
+    !data || typeof data !== 'object' ||
     !('messages' in data) ||
     !('api' in data) ||
-    ('stream' in data && typeof data.stream !== 'boolean') ||
-    ('model' in data && typeof data.model !== 'string') ||
-    ![2, 3, 4].includes(Object.keys(data).length)
+    'stream' in data && typeof data.stream !== 'boolean' ||
+    'model' in data && typeof data.model !== 'string' ||
+    Object.keys(data).some(key => !['messages', 'api', 'model', 'stream'].includes(key))
   ) {
     throw new Error('Invalid data')
   }
@@ -47,26 +45,15 @@ function generateResponse(
   messages: Message[],
   systemPrompt: string,
   api: ApiType,
-  model?: string,
+  modelName?: string,
   stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
+  const model = modelName && models[api]?.[modelName] || models[api]?.default
   switch (api) {
     case Api.ANTHROPIC:
-      return generateAnthropicResponse(
-        messages,
-        systemPrompt,
-        // @ts-ignore
-        model ? anthropicModels[model] : anthropicModels.default,
-        stream
-      )
+      return generateAnthropicResponse(messages, systemPrompt, model, stream)
     case Api.OPENAI:
-      return generateOpenaiResponse(
-        messages,
-        systemPrompt,
-        // @ts-ignore
-        model ? openaiModels[model] : openaiModels.default,
-        stream
-      )
+      return generateOpenaiResponse(messages, systemPrompt, model, stream)
     default:
       throw new Error('Invalid API')
   }
