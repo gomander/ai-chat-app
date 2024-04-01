@@ -3,6 +3,7 @@
   import { browser } from '$app/environment'
   import ChatMessage from '$lib/components/ChatMessage.svelte'
   import MessageForm from '$lib/components/MessageForm.svelte'
+  import optionsStore from '$lib/stores/options.svelte'
   import { assertMessages } from '$lib/utils/common'
   import { streamResponse } from '$lib/utils/stream'
   import type { FormSubmitEvent, Message } from '$types/common'
@@ -17,7 +18,7 @@
   let model = $derived(form?.model || data.model)
   let disabled = $derived(loading || !!answer.content)
 
-  let scrollToDiv: HTMLDivElement
+  let scrollToDiv = $state<HTMLDivElement>()
 
   onMount(() => {
     if (browser) {
@@ -34,7 +35,7 @@
   $effect(() => {
     if (browser && messages.length) {
       localStorage.setItem('messages', JSON.stringify(messages))
-      setTimeout(() => scrollToDiv.scrollIntoView({
+      setTimeout(() => scrollToDiv?.scrollIntoView({
         behavior: 'smooth', block: 'end', inline: 'nearest'
       }), 50)
     }
@@ -51,7 +52,11 @@
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ api, messages })
+        body: JSON.stringify({
+          api,
+          messages,
+          systemPrompt: optionsStore.systemPrompt
+        })
       })
       if (!response.ok || !response.body) {
         throw new Error('Failed to fetch')

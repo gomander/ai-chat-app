@@ -1,13 +1,16 @@
 <script lang="ts">
-  let { children } = $props()
+  import Drawer from '$lib/components/Drawer.svelte'
 
-  let open = $state(false)
+  let { children } = $props()
+  let drawerOpen = $state(false)
 </script>
+
+<Drawer bind:open={drawerOpen} />
 
 <div class="h-screen flex flex-col">
   <header class="flex gap-4 items-center bg-surface-100-800-token p-2">
     <button
-      onclick={() => open = !open}
+      onclick={() => drawerOpen = !drawerOpen}
       class="btn-icon variant-soft"
     >
       <svg

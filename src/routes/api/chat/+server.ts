@@ -2,7 +2,7 @@ import { assertMessages, assertApi, getSafeError } from '$lib/utils/common'
 import { generateOpenaiResponse } from '$lib/server/openai'
 import { generateAnthropicResponse } from '$lib/server/anthropic'
 import models from '$lib/data/models'
-import systemPrompt from '$lib/data/system-prompts/default'
+import defaultSystemPrompt from '$lib/data/system-prompts/default'
 import { Api, type ApiType, type Message } from '$types/common'
 
 export async function POST({ request }) {
@@ -10,7 +10,11 @@ export async function POST({ request }) {
   try {
     assertData(data)
     const message = await generateResponse(
-      data.messages, systemPrompt, data.api, data.model, data.stream
+      data.messages,
+      data.systemPrompt || defaultSystemPrompt,
+      data.api,
+      data.model ?? 'default',
+      data.stream ?? false
     )
     return new Response(message, {
       headers: { 'Content-Type': 'text/event-stream' }
@@ -25,7 +29,8 @@ function assertData(data: unknown): asserts data is {
   messages: Message[],
   api: ApiType,
   model?: string,
-  stream?: boolean
+  stream?: boolean,
+  systemPrompt?: string
 } {
   if (
     !data || typeof data !== 'object' ||
@@ -33,7 +38,10 @@ function assertData(data: unknown): asserts data is {
     !('api' in data) ||
     'stream' in data && typeof data.stream !== 'boolean' ||
     'model' in data && typeof data.model !== 'string' ||
-    Object.keys(data).some(key => !['messages', 'api', 'model', 'stream'].includes(key))
+    'systemPrompt' in data && typeof data.systemPrompt !== 'string' ||
+    Object.keys(data).some(key =>
+      !['messages', 'api', 'model', 'stream', 'systemPrompt'].includes(key)
+    )
   ) {
     throw new Error('Invalid data')
   }
