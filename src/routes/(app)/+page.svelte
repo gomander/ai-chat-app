@@ -53,9 +53,10 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          api,
-          messages,
-          systemPrompt: optionsStore.systemPrompt
+          api: optionsStore.api,
+          model: optionsStore.model,
+          systemPrompt: optionsStore.systemPrompt,
+          messages
         })
       })
       if (!response.ok || !response.body) {

@@ -9,16 +9,16 @@ export async function POST({ request }) {
   const data = await request.json() as unknown
   try {
     assertData(data)
-    const message = await generateResponse(
-      data.messages,
-      data.systemPrompt || defaultSystemPrompt,
-      data.api,
-      data.model ?? 'default',
-      data.stream ?? false
+    return new Response(
+      await generateResponse(
+        data.messages,
+        data.systemPrompt,
+        data.api,
+        data.model,
+        data.stream
+      ),
+      { headers: { 'Content-Type': 'text/event-stream' } }
     )
-    return new Response(message, {
-      headers: { 'Content-Type': 'text/event-stream' }
-    })
   } catch (e) {
     console.error(e)
     return new Response(getSafeError(e))
@@ -51,12 +51,12 @@ function assertData(data: unknown): asserts data is {
 
 function generateResponse(
   messages: Message[],
-  systemPrompt: string,
+  systemPrompt = defaultSystemPrompt,
   api: ApiType,
-  modelName?: string,
+  modelName = 'default',
   stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
-  const model = modelName && models[api]?.[modelName] || models[api]?.default
+  const model = models[api][modelName]
   switch (api) {
     case Api.ANTHROPIC:
       return generateAnthropicResponse(messages, systemPrompt, model, stream)

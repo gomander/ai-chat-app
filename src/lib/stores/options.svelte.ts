@@ -43,3 +43,9 @@ let options = $state<{
 }>(loadFromLocalStorage())
 
 export default options
+
+export function saveToLocalStorage() {
+  if (browser) {
+    localStorage.setItem('options', JSON.stringify(options))
+  }
+}
