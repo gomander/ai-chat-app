@@ -4,7 +4,7 @@ const models: Record<ApiType, { default: Model } & Record<string, Model>> = {
   openai: {
     default: { name: 'gpt-3.5-turbo', contextWindow: 16385 },
     'gpt-3.5-turbo': { name: 'gpt-3.5-turbo', contextWindow: 16385 },
-    'gpt-4-turbo': { name: 'gpt-4-turbo', contextWindow: 128000 }
+    'gpt-4-turbo': { name: 'gpt-4-turbo-preview', contextWindow: 128000 }
   },
   anthropic: {
     default: { name: 'claude-3-haiku-20240307', contextWindow: 200000 },

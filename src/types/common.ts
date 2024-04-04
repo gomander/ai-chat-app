@@ -1,6 +1,10 @@
-export interface Message {
+export interface ApiMessage {
   role: RoleType
   content: string
+}
+
+export interface Message extends ApiMessage {
+  id: string
 }
 
 export type RoleType = `${Role}`

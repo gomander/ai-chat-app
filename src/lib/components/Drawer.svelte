@@ -49,6 +49,11 @@
     event.preventDefault()
     optionsStore.systemPrompt = systemPrompt
   }
+
+  function openOptionsDialog() {
+    open = false
+    onOpenOptionsDialog()
+  }
 </script>
 
 {#if open}
@@ -80,7 +85,7 @@
     </div>
 
     <button
-      onclick={onOpenOptionsDialog}
+      onclick={openOptionsDialog}
       class="btn variant-filled-primary"
     >
       Open options dialog
@@ -133,7 +138,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    z-index: 999;
+    z-index: 20;
   }
 
   .drawer-backdrop {
@@ -144,6 +149,7 @@
   .drawer {
     overflow-y: auto;
     width: 20rem;
+    max-width: 75%;
     background-color: rgb(var(--color-surface-800));
     padding: 1rem;
   }

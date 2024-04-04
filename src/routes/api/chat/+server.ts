@@ -1,9 +1,9 @@
-import { assertMessages, assertApi, getSafeError } from '$lib/utils/common'
+import { assertApiMessages, assertApi, getSafeError } from '$lib/utils/common'
 import { generateOpenaiResponse } from '$lib/server/openai'
 import { generateAnthropicResponse } from '$lib/server/anthropic'
 import models from '$lib/data/models'
 import defaultSystemPrompt from '$lib/data/system-prompts/default'
-import { Api, type ApiType, type Message } from '$types/common'
+import { Api, type ApiMessage, type ApiType, type Message } from '$types/common'
 
 export async function POST({ request }) {
   const data = await request.json() as unknown
@@ -26,7 +26,7 @@ export async function POST({ request }) {
 }
 
 function assertData(data: unknown): asserts data is {
-  messages: Message[],
+  messages: ApiMessage[],
   api: ApiType,
   model?: string,
   stream?: boolean,
@@ -45,12 +45,12 @@ function assertData(data: unknown): asserts data is {
   ) {
     throw new Error('Invalid data')
   }
-  assertMessages(data.messages)
+  assertApiMessages(data.messages)
   assertApi(data.api)
 }
 
 function generateResponse(
-  messages: Message[],
+  messages: ApiMessage[],
   systemPrompt = defaultSystemPrompt,
   api: ApiType,
   modelName = 'default',

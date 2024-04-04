@@ -1,6 +1,32 @@
 import { DEFAULT_API } from '$lib/data/constants'
 import { Role, Api } from '$types/common'
-import type { Message, RoleType, ApiType } from '$types/common'
+import type { Message, RoleType, ApiType, ApiMessage } from '$types/common'
+
+export function assertApiMessages(messages: unknown): asserts messages is ApiMessage[] {
+  if (!Array.isArray(messages)) {
+    throw new Error('Invalid messages')
+  }
+  for (const message of messages) {
+    assertApiMessage(message)
+  }
+}
+
+function assertApiMessage(message: unknown): asserts message is ApiMessage {
+  if (
+    !message ||
+    typeof message !== 'object' ||
+    !('role' in message) ||
+    !('content' in message) ||
+    typeof message.content !== 'string' ||
+    !message.content.trim().length
+  ) {
+    throw new Error('Invalid message')
+  }
+  if ('id' in message) {
+    delete message.id
+  }
+  assertRole(message.role)
+}
 
 export function assertMessages(messages: unknown): asserts messages is Message[] {
   if (!Array.isArray(messages)) {
@@ -18,7 +44,9 @@ function assertMessage(message: unknown): asserts message is Message {
     !('role' in message) ||
     !('content' in message) ||
     typeof message.content !== 'string' ||
-    message.content.trim().length < 2
+    !('id' in message) ||
+    typeof message.id !== 'string' ||
+    !message.content.trim().length
   ) {
     throw new Error('Invalid message')
   }

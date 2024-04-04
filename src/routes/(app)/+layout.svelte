@@ -14,7 +14,7 @@
 <div class="h-screen flex flex-col">
   <button
     onclick={() => drawerOpen = !drawerOpen}
-    class="btn-icon variant-soft fixed top-2 left-2"
+    class="btn-icon variant-glass fixed top-2 left-2 z-10"
   >
     <Icon name="menu" />
   </button>

@@ -3,12 +3,12 @@ import { encode } from 'gpt-tokenizer'
 import { OPENAI_API_KEY } from '$env/static/private'
 import models from '$lib/data/models'
 import defaultSystemPrompt from '$lib/data/system-prompts/default'
-import type { Message } from '$types/common'
+import type { ApiMessage } from '$types/common'
 
 const openai = new OpenAi({ apiKey: OPENAI_API_KEY })
 
 export async function generateOpenaiResponse(
-  messages: Message[],
+  messages: ApiMessage[],
   systemPrompt = defaultSystemPrompt,
   model = models.openai.default,
   stream = true
