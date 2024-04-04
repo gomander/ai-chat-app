@@ -1,11 +1,15 @@
 <script lang="ts">
   import { fly, fade } from 'svelte/transition'
   import { browser } from '$app/environment'
+  import Icon from '$lib/components/Icon.svelte'
   import optionsStore from '$lib/stores/options.svelte'
   import models from '$lib/data/models'
   import { Api, type FormSubmitEvent } from '$types/common'
 
-  let { open = $bindable(false) } = $props()
+  let { open = $bindable(false), onOpenOptionsDialog }: {
+    open: boolean
+    onOpenOptionsDialog: () => void
+  } = $props()
 
   let modelOptions = $derived(Object.keys(models[optionsStore.api]))
   let systemPrompt = $state(optionsStore.systemPrompt)
@@ -48,6 +52,8 @@
 </script>
 
 {#if open}
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
   <div
     onclick={() => open = false}
     class="fixed-overlay drawer-backdrop"
@@ -69,19 +75,16 @@
         onclick={() => open = false}
         class="btn-icon variant-soft-primary"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 -960 960 960"
-          width="24"
-          height="24"
-        >
-          <path
-            fill="white"
-            d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
-          />
-        </svg>
+        <Icon name="close" />
       </button>
     </div>
+
+    <button
+      onclick={onOpenOptionsDialog}
+      class="btn variant-filled-primary"
+    >
+      Open options dialog
+    </button>
 
     <form
       onsubmit={onSubmit}
