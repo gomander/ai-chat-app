@@ -1,10 +1,7 @@
 <script lang="ts">
-  import type { RoleType } from '$types/common'
+  import type { ApiMessage } from '$types/common'
 
-  let { content, role }: {
-    content: string,
-    role: RoleType
-  } = $props()
+  let { content, role }: ApiMessage = $props()
 </script>
 
 <div class="relative wrapper-{role}">
@@ -13,7 +10,7 @@
   </div>
 </div>
 
-<style lang="postcss">
+<style>
   .wrapper-user {
     align-self: flex-end;
   }
