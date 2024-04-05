@@ -1,27 +1,27 @@
 import OpenAi from 'openai'
 import { encode } from 'gpt-tokenizer'
 import { OPENAI_API_KEY } from '$env/static/private'
-import models from '$lib/data/models'
+import { getDefaultModel } from '$lib/data/models'
 import defaultSystemPrompt from '$lib/data/system-prompts/default'
-import type { ApiMessage } from '$types/common'
+import { Api, type ApiMessage } from '$types/common'
 
 const openai = new OpenAi({ apiKey: OPENAI_API_KEY })
 
 export async function generateOpenaiResponse(
   messages: ApiMessage[],
   systemPrompt = defaultSystemPrompt,
-  model = models.openai.default,
+  model = getDefaultModel(Api.OPENAI).model,
   stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
   let tokens = getTokens(systemPrompt)
   for (const message of messages) {
     const currentMessageTokens = getTokens(message.content)
-    if (currentMessageTokens > model.contextWindow) {
+    if (currentMessageTokens > model.maxTokens.input) {
       throw new Error('Your message is too long.')
     }
     tokens += currentMessageTokens
   }
-  while (tokens > model.contextWindow) {
+  while (tokens > model.maxTokens.input) {
     tokens -= getTokens(messages[0].content)
     messages.shift()
   }
@@ -33,7 +33,7 @@ export async function generateOpenaiResponse(
     return 'Your message contains inappropriate content.'
   }
   const config: OpenAi.Chat.Completions.ChatCompletionCreateParams = {
-    model: model.name,
+    model: model.id,
     messages: [{ role: 'system', content: systemPrompt }, ...messages]
   }
   if (stream) {

@@ -1,9 +1,9 @@
 import { assertApiMessages, assertApi, getSafeError } from '$lib/utils/common'
 import { generateOpenaiResponse } from '$lib/server/openai'
 import { generateAnthropicResponse } from '$lib/server/anthropic'
-import models from '$lib/data/models'
+import models, { getDefaultModel } from '$lib/data/models'
 import defaultSystemPrompt from '$lib/data/system-prompts/default'
-import { Api, type ApiMessage, type ApiType, type Message } from '$types/common'
+import { Api, type ApiMessage, type ApiType } from '$types/common'
 
 export async function POST({ request }) {
   const data = await request.json() as unknown
@@ -53,10 +53,10 @@ function generateResponse(
   messages: ApiMessage[],
   systemPrompt = defaultSystemPrompt,
   api: ApiType,
-  modelName = 'default',
+  modelKey = getDefaultModel(api).key,
   stream = true
 ): Promise<string | ReadableStream<Uint8Array>> {
-  const model = models[api][modelName]
+  const model = models[api][modelKey]
   switch (api) {
     case Api.ANTHROPIC:
       return generateAnthropicResponse(messages, systemPrompt, model, stream)

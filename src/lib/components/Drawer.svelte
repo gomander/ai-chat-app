@@ -1,18 +1,12 @@
 <script lang="ts">
   import { fly, fade } from 'svelte/transition'
-  import { browser } from '$app/environment'
   import Icon from '$lib/components/Icon.svelte'
-  import optionsStore from '$lib/stores/options.svelte'
-  import models from '$lib/data/models'
-  import { Api, type FormSubmitEvent } from '$types/common'
 
   let { open = $bindable(false), onOpenOptionsDialog }: {
     open: boolean
     onOpenOptionsDialog: () => void
   } = $props()
 
-  let modelOptions = $derived(Object.keys(models[optionsStore.api]))
-  let systemPrompt = $state(optionsStore.systemPrompt)
   let drawerElement = $state<HTMLDivElement>()
 
   $effect(() => {
@@ -24,30 +18,10 @@
     }
   })
 
-  $effect(() => {
-    if (!modelOptions.includes(optionsStore.model)) {
-      optionsStore.model = 'default'
-    }
-    if (browser) {
-      localStorage.setItem('options',
-        JSON.stringify({
-          api: optionsStore.api,
-          model: optionsStore.model,
-          systemPrompt: optionsStore.systemPrompt
-        })
-      )
-    }
-  })
-
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       open = false
     }
-  }
-
-  function onSubmit(event: FormSubmitEvent) {
-    event.preventDefault()
-    optionsStore.systemPrompt = systemPrompt
   }
 
   function openOptionsDialog() {
@@ -90,45 +64,6 @@
     >
       Open options dialog
     </button>
-
-    <form
-      onsubmit={onSubmit}
-      class="flex flex-col gap-2"
-    >
-      <label class="label">
-        <span>API</span>
-        <select class="select" name="api" bind:value={optionsStore.api}>
-          {#each Object.values(Api) as apiOption}
-            <option value={apiOption}>{apiOption}</option>
-          {/each}
-        </select>
-      </label>
-
-      <label class="label">
-        <span>Model</span>
-        <select class="select" name="model" bind:value={optionsStore.model}>
-          {#each modelOptions as modelOption}
-            <option value={modelOption}>{modelOption}</option>
-          {/each}
-        </select>
-      </label>
-
-      <label class="label">
-        <span>System Prompt</span>
-        <textarea
-          class="textarea"
-          name="systemPrompt"
-          bind:value={systemPrompt}
-        />
-      </label>
-
-      <button
-        disabled={!systemPrompt || systemPrompt === optionsStore.systemPrompt}
-        class="btn variant-filled-primary"
-      >
-        Save
-      </button>
-    </form>
   </div>
 {/if}
 

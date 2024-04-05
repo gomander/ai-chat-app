@@ -1,13 +1,13 @@
 import { browser } from '$app/environment'
 import { assertApi } from '$lib/utils/common'
 import { DEFAULT_API } from '$lib/data/constants'
-import models from '$lib/data/models'
+import models, { getDefaultModel } from '$lib/data/models'
 import defaultSystemPrompt from '$lib/data/system-prompts/default'
 import type { ApiType } from '$types/common'
 
 const defaultOptions = {
   api: DEFAULT_API,
-  model: 'default',
+  model: getDefaultModel(DEFAULT_API).key,
   systemPrompt: defaultSystemPrompt
 }
 

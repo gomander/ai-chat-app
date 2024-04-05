@@ -6,13 +6,11 @@
   import optionsStore from '$lib/stores/options.svelte'
   import { assertMessages } from '$lib/utils/common'
   import { streamResponse } from '$lib/utils/stream'
-  import type { ApiMessage, FormSubmitEvent } from '$types/common'
+  import type { ApiMessage, FormSubmitEvent, Message } from '$types/common'
 
-  let { data } = $props()
-
-  let messages = $state(data.messages)
-  let loading = $state(false)
+  let messages = $state<Message[]>([])
   let answer = $state<ApiMessage>({ role: 'assistant', content: '' })
+  let loading = $state(false)
 
   let disabled = $derived(loading || !!answer.content)
 

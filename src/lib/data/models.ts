@@ -1,16 +1,66 @@
 import type { ApiType, Model } from '$types/common'
 
-const models: Record<ApiType, { default: Model } & Record<string, Model>> = {
-  openai: {
-    default: { name: 'gpt-3.5-turbo', contextWindow: 16385 },
-    'gpt-3.5-turbo': { name: 'gpt-3.5-turbo', contextWindow: 16385 },
-    'gpt-4-turbo': { name: 'gpt-4-turbo-preview', contextWindow: 128000 }
+const openaiModels: Record<string, Model> = {
+  'gpt-3.5-turbo': {
+    name: 'GPT 3.5 Turbo',
+    id: 'gpt-3.5-turbo',
+    maxTokens: {
+      input: 16385,
+      output: 4096
+    },
+    maxTemperature: 2
   },
-  anthropic: {
-    default: { name: 'claude-3-haiku-20240307', contextWindow: 200000 },
-    'claude-3-haiku': { name: 'claude-3-haiku-20240307', contextWindow: 200000 },
-    'claude-3-sonnet': { name: 'claude-3-sonnet-20240229', contextWindow: 200000 },
-    'claude-3-opus': { name: 'claude-3-opus-20240229', contextWindow: 200000 }
+  'gpt-4-turbo': {
+    name: 'GPT 4 Turbo',
+    id: 'gpt-4-turbo-preview',
+    maxTokens: {
+      input: 128000,
+      output: 4096
+    },
+    maxTemperature: 2
+  }
+}
+
+const anthropicModels: Record<string, Model> = {
+  'claude-3-haiku': {
+    name: 'Claude 3 Haiku',
+    id: 'claude-3-haiku-20240307',
+    maxTokens: {
+      input: 200000,
+      output: 4096
+    },
+    maxTemperature: 1
+  },
+  'claude-3-sonnet': {
+    name: 'Claude 3 Sonnet',
+    id: 'claude-3-sonnet-20240229',
+    maxTokens: {
+      input: 200000,
+      output: 4096
+    },
+    maxTemperature: 1
+  },
+  'claude-3-opus': {
+    name: 'Claude 3 Opus',
+    id: 'claude-3-opus-20240229',
+    maxTokens: {
+      input: 200000,
+      output: 4096
+    },
+    maxTemperature: 1
+  }
+}
+
+
+const models: Record<ApiType, Record<string, Model>> = {
+  openai: openaiModels,
+  anthropic: anthropicModels
+}
+
+export function getDefaultModel(api: ApiType): { key: string, model: Model } {
+  return {
+    key: Object.keys(models[api])[0],
+    model: Object.values(models[api])[0]
   }
 }
 

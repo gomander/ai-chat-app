@@ -22,8 +22,13 @@ export enum Api {
 }
 
 export interface Model {
+  id: string
   name: string
-  contextWindow: number
+  maxTokens: {
+    input: number
+    output: number
+  }
+  maxTemperature: number
 }
 
 export interface FormSubmitEvent extends SubmitEvent {

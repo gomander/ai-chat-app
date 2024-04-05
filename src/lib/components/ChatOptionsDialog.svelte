@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '$lib/components/Icon.svelte'
-  import optionsStore from '$lib/stores/options.svelte'
-  import models from '$lib/data/models'
+  import optionsStore, { saveToLocalStorage } from '$lib/stores/options.svelte'
+  import models, { getDefaultModel } from '$lib/data/models'
   import DEFAULT_SYSTEM_PROMPT from '$lib/data/system-prompts/default'
   import { Api, type FormSubmitEvent } from '$types/common'
 
@@ -22,7 +22,7 @@
 
   $effect(() => {
     if (!models[api][model]) {
-      model = 'default'
+      model = getDefaultModel(api).key
     }
   })
 
@@ -39,11 +39,12 @@
     }
   }
 
-  function handleSubmit(e: FormSubmitEvent) {
+  function onSubmit(e: FormSubmitEvent) {
     e.preventDefault()
     optionsStore.api = api
     optionsStore.model = model
     optionsStore.systemPrompt = systemPrompt
+    saveToLocalStorage()
     open = false
   }
 </script>
@@ -68,7 +69,7 @@
     </header>
 
     <form
-      onsubmit={handleSubmit}
+      onsubmit={onSubmit}
       class="flex flex-col gap-2"
     >
       <label class="label">
@@ -91,8 +92,8 @@
           bind:value={model}
           class="select"
         >
-          {#each Object.keys(models[api]) as modelOption}
-            <option value={modelOption}>{modelOption}</option>
+          {#each Object.entries(models[api]) as modelOption}
+            <option value={modelOption[0]}>{modelOption[1].name}</option>
           {/each}
         </select>
       </label>
