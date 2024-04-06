@@ -1,7 +1,7 @@
 <script lang="ts">
   import icons from '$lib/data/icons'
 
-  let { name, size = 24, color = 'white' }: {
+  let { name, size = 25, color = 'white' }: {
     name: keyof typeof icons,
     size?: number,
     color?: string

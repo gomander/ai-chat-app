@@ -15,10 +15,19 @@
   <button
     onclick={() => drawerOpen = !drawerOpen}
     class="btn-icon variant-glass fixed top-2 left-2 z-10"
-    title="Open menu"
+    title="Menu"
     aria-label="Open menu"
   >
     <Icon name="menu" />
+  </button>
+
+  <button
+    onclick={() => optionsOpen = true}
+    class="btn-icon variant-glass fixed top-2 right-2 z-10"
+    title="Settings"
+    aria-label="Open settings"
+  >
+    <Icon name="settings" />
   </button>
 
   <main class="flex-1 flex flex-col px-4 pb-2 h-px">

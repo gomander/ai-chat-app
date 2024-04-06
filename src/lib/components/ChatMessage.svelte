@@ -8,7 +8,7 @@
   class="relative wrapper-{role}"
   aria-label="{role} message"
 >
-  <div class="px-4 py-2 mx-2 rounded-lg max-w-prose message message-{role}">
+  <div class="p-3 mx-2 rounded-2xl max-w-prose message message-{role}">
     {content}
   </div>
 </div>
