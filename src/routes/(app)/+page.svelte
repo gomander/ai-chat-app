@@ -91,7 +91,7 @@
     {#if answer.content}
       <ChatMessage {...answer} />
     {/if}
-    <div bind:this={scrollToDiv} />
+    <div bind:this={scrollToDiv}></div>
   </div>
 
   <MessageForm {onSubmit} {disabled} />

@@ -12,6 +12,7 @@
   let systemPrompt = $state(optionsStore.systemPrompt)
   let maxTokens = $state(optionsStore.maxTokens)
   let temperature = $state(optionsStore.temperature)
+
   let modelMaxTokens = $derived(models[api][model]?.maxTokens.output)
   let modelMaxTemperature = $derived(models[api][model]?.maxTemperature)
 
@@ -118,7 +119,7 @@
           bind:value={systemPrompt}
           placeholder="You are a helpful assistant."
           class="textarea min-h-24"
-        />
+        ></textarea>
       </label>
 
       <div class="flex gap-2">
@@ -132,7 +133,7 @@
             bind:value={maxTokens}
             placeholder="Not set"
             class="input"
-          />
+          >
         </label>
 
         <label class="label">
@@ -146,7 +147,7 @@
             bind:value={temperature}
             placeholder="Not set"
             class="input"
-          />
+          >
         </label>
       </div>
 

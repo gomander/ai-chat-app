@@ -21,7 +21,7 @@
     placeholder="Type a message"
     {disabled}
     class="input"
-  />
+  >
 
   <button
     type="submit"

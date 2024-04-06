@@ -40,7 +40,7 @@
     role="dialog"
     aria-modal="true"
     aria-label="Drawer"
-  />
+  ></div>
 
   <div
     bind:this={drawerElement}
