@@ -51,6 +51,17 @@ const anthropicModels: Record<string, Model> = {
   }
 }
 
+// const googleaiModels: Record<string, Model> = {
+//   'gemini-pro': {
+//     name: 'Gemini Pro',
+//     id: 'gemini-pro',
+//     maxTokens: {
+//       input: 30720,
+//       output: 2048
+//     },
+//     maxTemperature: 1
+//   }
+// }
 
 const models: Record<ApiType, Record<string, Model>> = {
   openai: openaiModels,
