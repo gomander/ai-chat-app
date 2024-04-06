@@ -45,10 +45,14 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          messages: messages.map(message => ({ role: message.role, content: message.content })),
           api: optionsStore.api,
           model: optionsStore.model,
           systemPrompt: optionsStore.systemPrompt,
-          messages: messages.map(message => ({ role: message.role, content: message.content }))
+          maxTokens: optionsStore.maxTokens,
+          temperature: optionsStore.temperature,
+          stopSequences: optionsStore.stopSequences,
+          stream: true
         })
       })
       if (!response.ok || !response.body) {

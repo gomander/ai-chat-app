@@ -1,6 +1,7 @@
 import { DEFAULT_API } from '$lib/data/constants'
+import models, { getDefaultModel } from '$lib/data/models'
 import { Role, Api } from '$types/common'
-import type { Message, RoleType, ApiType, ApiMessage } from '$types/common'
+import type { Message, RoleType, ApiType, ApiMessage, Model } from '$types/common'
 
 export function assertApiMessages(messages: unknown): asserts messages is ApiMessage[] {
   if (!Array.isArray(messages)) {
@@ -67,6 +68,44 @@ export function assertApi(api: any): asserts api is ApiType {
 
 export function getSafeApi(api: any): ApiType {
   return Object.values(Api).includes(api) ? api as ApiType : DEFAULT_API
+}
+
+export function getSafeModelKey(api: ApiType, model: unknown): string {
+  if (typeof model === 'string' && models[api][model]) {
+    return model
+  }
+  return getDefaultModel(api).key
+}
+
+export function getSafeSystemPrompt(model: Model, systemPrompt: unknown): string | undefined {
+  if (
+    typeof systemPrompt === 'string' &&
+    systemPrompt.trim().length < model.maxTokens.input
+  ) {
+    return systemPrompt.trim()
+  }
+  return undefined
+}
+
+export function getSafeTemperature(model: Model, temperature: unknown): number | undefined {
+  if (typeof temperature === 'number') {
+    return Math.max(0, Math.min(temperature, model.maxTemperature))
+  }
+  return undefined
+}
+
+export function getSafeMaxTokens(model: Model, maxTokens: unknown): number | undefined {
+  if (typeof maxTokens === 'number') {
+    return Math.max(1, Math.min(maxTokens, model.maxTokens.output))
+  }
+  return undefined
+}
+
+export function getSafeStopSequences(stopSequences: unknown): string[] | undefined {
+  if (Array.isArray(stopSequences)) {
+    return stopSequences.filter(sequence => sequence && typeof sequence === 'string').slice(0, 4)
+  }
+  return undefined
 }
 
 export function getSafeError(error: unknown): string {

@@ -2,18 +2,22 @@ import OpenAi from 'openai'
 import { encode } from 'gpt-tokenizer'
 import { OPENAI_API_KEY } from '$env/static/private'
 import { getDefaultModel } from '$lib/data/models'
-import defaultSystemPrompt from '$lib/data/system-prompts/default'
 import { Api, type ApiMessage } from '$types/common'
 
 const openai = new OpenAi({ apiKey: OPENAI_API_KEY })
 
 export async function generateOpenaiResponse(
   messages: ApiMessage[],
-  systemPrompt = defaultSystemPrompt,
   model = getDefaultModel(Api.OPENAI).model,
-  stream = true
+  options: {
+    systemPrompt?: string,
+    maxTokens?: number,
+    temperature?: number,
+    stopSequences?: string[],
+    stream?: boolean
+  } = {}
 ): Promise<string | ReadableStream<Uint8Array>> {
-  let tokens = getTokens(systemPrompt)
+  let tokens = getTokens(options.systemPrompt || '')
   for (const message of messages) {
     const currentMessageTokens = getTokens(message.content)
     if (currentMessageTokens > model.maxTokens.input) {
@@ -34,9 +38,14 @@ export async function generateOpenaiResponse(
   }
   const config: OpenAi.Chat.Completions.ChatCompletionCreateParams = {
     model: model.id,
-    messages: [{ role: 'system', content: systemPrompt }, ...messages]
+    messages: options.systemPrompt
+      ? [{ role: 'system', content: options.systemPrompt }, ...messages]
+      : messages,
+    max_tokens: options.maxTokens,
+    temperature: options.temperature,
+    stop: options.stopSequences
   }
-  if (stream) {
+  if (options.stream) {
     return (await openai.chat.completions.create({
       ...config,
       stream: true

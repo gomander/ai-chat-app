@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai' // needs to be installed
 import { GOOGLEAI_API_KEY } from '$env/static/private'
 import { getDefaultModel } from '$lib/data/models'
-import defaultSystemPrompt from '$lib/data/system-prompts/default'
 import { Api, type ApiMessage } from '$types/common'
 
 const googleai = new GoogleGenerativeAI(GOOGLEAI_API_KEY)
@@ -12,15 +11,18 @@ const googleai = new GoogleGenerativeAI(GOOGLEAI_API_KEY)
  */
 export async function generateGoogleaiResponse(
   messages: ApiMessage[],
-  systemPrompt = defaultSystemPrompt,
   modelData = getDefaultModel(Api.GOOGLEAI).model,
-  stream = true
+  options: {
+    systemPrompt?: string,
+    maxTokens?: number,
+    temperature?: number,
+    stopSequences?: string[],
+    stream?: boolean
+  } = {}
 ): Promise<string | ReadableStream> {
   const model = googleai.getGenerativeModel({ model: modelData.id })
   const chat = model.startChat({
     history: [
-      { role: 'user', parts: [{ text: systemPrompt }] },
-      { role: 'model', parts: [{ text: 'Understood.' }] },
       ...messages.map(message => ({
         role: message.role === 'user' ? 'user' : 'model',
         parts: [{ text: message.content }]
@@ -28,7 +30,7 @@ export async function generateGoogleaiResponse(
       ).slice(0, messages.length - 1)
     ]
   })
-  if (stream) {
+  if (options.stream) {
     // ReadableStream.from was added with the experimental flag in Node 20.6.0.
     // Since this runs in the backend, we can ignore the TS error so long as the
     // environment uses Node 20.6.0 or higher.

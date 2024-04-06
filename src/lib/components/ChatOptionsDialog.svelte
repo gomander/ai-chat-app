@@ -2,7 +2,6 @@
   import Icon from '$lib/components/Icon.svelte'
   import optionsStore, { saveToLocalStorage } from '$lib/stores/options.svelte'
   import models, { getDefaultModel } from '$lib/data/models'
-  import DEFAULT_SYSTEM_PROMPT from '$lib/data/system-prompts/default'
   import { Api, type FormSubmitEvent } from '$types/common'
 
   let { open = $bindable(false) }: { open: boolean } = $props()
@@ -103,7 +102,7 @@
         <textarea
           name="systemPrompt"
           bind:value={systemPrompt}
-          placeholder={DEFAULT_SYSTEM_PROMPT}
+          placeholder="You are a helpful assistant."
           class="textarea min-h-24"
         />
       </label>

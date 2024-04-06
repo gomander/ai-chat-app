@@ -1,14 +1,24 @@
 import { browser } from '$app/environment'
-import { assertApi } from '$lib/utils/common'
+import {
+  getSafeApi, getSafeMaxTokens, getSafeModelKey, getSafeStopSequences,
+  getSafeSystemPrompt, getSafeTemperature
+} from '$lib/utils/common'
 import { DEFAULT_API } from '$lib/data/constants'
 import models, { getDefaultModel } from '$lib/data/models'
-import defaultSystemPrompt from '$lib/data/system-prompts/default'
 import type { ApiType } from '$types/common'
 
-const defaultOptions = {
+interface Options {
+  api: ApiType,
+  model: string,
+  systemPrompt?: string,
+  temperature?: number,
+  maxTokens?: number,
+  stopSequences?: string[]
+}
+
+const defaultOptions: Options = {
   api: DEFAULT_API,
-  model: getDefaultModel(DEFAULT_API).key,
-  systemPrompt: defaultSystemPrompt
+  model: getDefaultModel(DEFAULT_API).key
 }
 
 function loadFromLocalStorage() {
@@ -17,30 +27,41 @@ function loadFromLocalStorage() {
     if (localOptions) {
       try {
         const parsedOptions = JSON.parse(localOptions)
-        assertOptions(parsedOptions)
-        return parsedOptions
+        return getSafeOptions(parsedOptions)
       } catch (e) {}
     }
   }
-  return defaultOptions
+  return { ...defaultOptions }
 }
 
-function assertOptions(options: any): asserts options is typeof defaultOptions {
-  if (!options || typeof options !== 'object') {
-    throw new Error('Invalid options')
+function getSafeOptions(data: unknown): Options {
+  const options = { ...defaultOptions }
+  if (!data || typeof data !== 'object') {
+    return options
   }
-  const api: ApiType = options.api
-  assertApi(options.api)
-  if (typeof options.model !== 'string' || !models[api][options.model]) {
-    throw new Error('Invalid model')
+  if ('api' in data && typeof data.api === 'string') {
+    options.api = getSafeApi(data.api)
+    options.model = 'model' in data
+      ? getSafeModelKey(options.api, data.model)
+      : getDefaultModel(options.api).key
   }
+  const model = models[options.api][options.model]
+  if ('systemPrompt' in data) {
+    options.systemPrompt = getSafeSystemPrompt(model, data.systemPrompt)
+  }
+  if ('temperature' in data) {
+    options.temperature = getSafeTemperature(model, data.temperature)
+  }
+  if ('maxTokens' in data) {
+    options.maxTokens = getSafeMaxTokens(model, data.maxTokens)
+  }
+  if ('stopSequences' in data) {
+    options.stopSequences = getSafeStopSequences(data.stopSequences)
+  }
+  return options
 }
 
-let options = $state<{
-  api: ApiType,
-  model: string,
-  systemPrompt: string
-}>(loadFromLocalStorage())
+let options = $state<Options>(loadFromLocalStorage())
 
 export default options
 
