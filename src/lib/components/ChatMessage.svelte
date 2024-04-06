@@ -17,6 +17,7 @@
 
   .message {
     overflow-wrap: anywhere;
+    white-space-collapse: preserve;
   }
 
   .message::after {
