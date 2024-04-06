@@ -14,6 +14,7 @@
   width={size}
   height={size}
 >
+  <title>{name}</title>
   <path
     fill={color}
     d={icons[name]}

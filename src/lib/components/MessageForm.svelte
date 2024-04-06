@@ -27,6 +27,8 @@
     type="submit"
     {disabled}
     class="btn-icon variant-filled-primary flex-shrink-0"
+    title="Send message"
+    aria-label="Send message"
   >
     <Icon name="send" color="black" />
   </button>

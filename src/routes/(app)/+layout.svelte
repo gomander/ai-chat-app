@@ -15,6 +15,8 @@
   <button
     onclick={() => drawerOpen = !drawerOpen}
     class="btn-icon variant-glass fixed top-2 left-2 z-10"
+    title="Open menu"
+    aria-label="Open menu"
   >
     <Icon name="menu" />
   </button>

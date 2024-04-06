@@ -4,7 +4,10 @@
   let { content, role }: ApiMessage = $props()
 </script>
 
-<div class="relative wrapper-{role}">
+<div
+  class="relative wrapper-{role}"
+  aria-label="{role} message"
+>
   <div class="px-4 py-2 mx-2 rounded-lg max-w-prose message message-{role}">
     {content}
   </div>

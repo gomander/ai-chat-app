@@ -39,7 +39,7 @@
     transition:fade
     role="dialog"
     aria-modal="true"
-    aria-label="Drawer"
+    aria-label="Drawer backdrop"
   ></div>
 
   <div
