@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { browser } from '$app/environment'
   import ChatMessage from '$lib/components/ChatMessage.svelte'
+  import Icon from '$lib/components/Icon.svelte'
   import MessageForm from '$lib/components/MessageForm.svelte'
   import optionsStore from '$lib/stores/options.svelte'
   import { assertMessages } from '$lib/utils/common'
@@ -33,12 +34,7 @@
     }
   })
 
-  async function onSubmit(e: FormSubmitEvent) {
-    e.preventDefault()
-    const newMessage = String(e.currentTarget.newMessage.value || '').trim()
-    if (disabled || newMessage.length < 2) return
-    e.currentTarget.reset()
-    messages.push({ role: 'user', content: newMessage, id: crypto.randomUUID() })
+  async function generateResponse() {
     loading = true
     try {
       const response = await fetch('/api/chat', {
@@ -72,6 +68,20 @@
     answer.content = ''
   }
 
+  function onSubmit(e: FormSubmitEvent) {
+    e.preventDefault()
+    const newMessage = String(e.currentTarget.newMessage.value || '').trim()
+    if (disabled || newMessage.length < 2) return
+    e.currentTarget.reset()
+    messages.push({ role: 'user', content: newMessage, id: crypto.randomUUID() })
+    generateResponse()
+  }
+
+  function regenerateResponse() {
+    messages.splice(-1, 1)
+    generateResponse()
+  }
+
   function scrollToBottom() {
     scrollToDiv?.scrollIntoView({
       behavior: 'smooth', block: 'end', inline: 'nearest'
@@ -84,12 +94,21 @@
 </svelte:head>
 
 <div class="flex-1 flex flex-col justify-end min-h-96 h-px w-full max-w-3xl mx-auto">
-  <div class="flex flex-col gap-2 overflow-y-scroll py-2 -mx-2 transition-all">
+  <div class="flex flex-col gap-2 overflow-y-scroll pt-16 pb-2 -mx-2 transition-all">
     {#each messages as message (message.id)}
       <ChatMessage {...message} />
     {/each}
     {#if answer.content}
       <ChatMessage {...answer} />
+    {:else if !loading}
+      <button
+        onclick={regenerateResponse}
+        class="btn-icon btn-icon-sm"
+        title="Regenerate response"
+        aria-label="Regenerate response"
+      >
+        <Icon name="refresh" />
+      </button>
     {/if}
     <div bind:this={scrollToDiv}></div>
   </div>
