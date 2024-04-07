@@ -13,6 +13,7 @@
   viewBox="0 -960 960 960"
   width={size}
   height={size}
+  class="pointer-events-none"
 >
   <title>{name}</title>
   <path
