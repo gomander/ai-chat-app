@@ -1,8 +1,14 @@
 <script lang="ts">
+  import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
   import Icon from '$lib/components/Icon.svelte'
   import optionsStore, { saveToLocalStorage } from '$lib/stores/options.svelte'
   import models, { getDefaultModel } from '$lib/data/models'
   import { Api, type FormSubmitEvent } from '$types/common'
+
+  const apis = [
+    { label: 'OpenAI', value: Api.OPENAI },
+    { label: 'Anthropic', value: Api.ANTHROPIC }
+  ]
 
   let { open = $bindable(false) }: { open: boolean } = $props()
 
@@ -12,6 +18,7 @@
   let systemPrompt = $state(optionsStore.systemPrompt)
   let maxTokens = $state(optionsStore.maxTokens)
   let temperature = $state(optionsStore.temperature)
+  let stopSequencesString = $state(optionsStore.stopSequences?.join(', '))
 
   let modelMaxTokens = $derived(models[api][model]?.maxTokens.output)
   let modelMaxTemperature = $derived(models[api][model]?.maxTemperature)
@@ -56,6 +63,12 @@
     optionsStore.systemPrompt = systemPrompt?.trim() || undefined
     optionsStore.maxTokens = maxTokens
     optionsStore.temperature = temperature
+    optionsStore.stopSequences = stopSequencesString
+      ?.replaceAll('\\,', '<escaped-comma>')
+      .split(',')
+      .map(string => string.trim().replaceAll('<escaped-comma>', ','))
+      .filter(string => string)
+      .slice(0, 3)
     saveToLocalStorage()
     open = false
   }
@@ -92,8 +105,8 @@
             bind:value={api}
             class="select"
           >
-            {#each Object.values(Api) as apiOption}
-              <option value={apiOption}>{apiOption}</option>
+            {#each apis as { label, value }}
+              <option {value}>{label}</option>
             {/each}
           </select>
         </label>
@@ -105,8 +118,8 @@
             bind:value={model}
             class="select"
           >
-            {#each Object.entries(models[api]) as modelOption}
-              <option value={modelOption[0]}>{modelOption[1].name}</option>
+            {#each Object.entries(models[api]) as [key, modelData]}
+              <option value={key}>{modelData.name}</option>
             {/each}
           </select>
         </label>
@@ -122,35 +135,57 @@
         ></textarea>
       </label>
 
-      <div class="flex gap-2">
-        <label class="label">
-          <span>Max tokens (1 - {modelMaxTokens})</span>
-          <input
-            type="number"
-            name="maxTokens"
-            min={1}
-            max={modelMaxTokens}
-            bind:value={maxTokens}
-            placeholder="Not set"
-            class="input"
-          >
-        </label>
+      <Accordion class="card p-2 text-token">
+        <AccordionItem>
+          <svelte:fragment slot="lead"><Icon name="settings" /></svelte:fragment>
+          <svelte:fragment slot="summary">
+            <p class="font-bold">Advanced options</p>
+          </svelte:fragment>
+          <svelte:fragment slot="iconClosed"><Icon name="caretUp" /></svelte:fragment>
+          <svelte:fragment slot="iconOpen"><Icon name="caretDown" /></svelte:fragment>
+          <svelte:fragment slot="content">
+            <div class="pt-2 flex gap-2">
+              <label class="label">
+                <span>Max tokens (1 - {modelMaxTokens})</span>
+                <input
+                  type="number"
+                  name="maxTokens"
+                  min={1}
+                  max={modelMaxTokens}
+                  bind:value={maxTokens}
+                  placeholder="Not set"
+                  class="input"
+                >
+              </label>
 
-        <label class="label">
-          <span>Temperature (0 - {modelMaxTemperature})</span>
-          <input
-            type="number"
-            name="temperature"
-            min={0}
-            max={modelMaxTemperature}
-            step={0.1}
-            bind:value={temperature}
-            placeholder="Not set"
-            class="input"
-          >
-        </label>
-      </div>
+              <label class="label">
+                <span>Temperature (0 - {modelMaxTemperature})</span>
+                <input
+                  type="number"
+                  name="temperature"
+                  min={0}
+                  max={modelMaxTemperature}
+                  step={0.1}
+                  bind:value={temperature}
+                  placeholder="Not set"
+                  class="input"
+                >
+              </label>
+            </div>
 
+            <label class="label">
+              <span>Stop sequences (max 4, comma separated)</span>
+              <input
+                type="text"
+                name="stopSequences"
+                bind:value={stopSequencesString}
+                placeholder="None set"
+                class="input"
+              >
+            </label>
+          </svelte:fragment>
+        </AccordionItem>
+      </Accordion>
       <button class="btn variant-filled-primary">Save</button>
     </form>
   </div>
