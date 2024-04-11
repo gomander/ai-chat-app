@@ -12,7 +12,7 @@ const openaiModels: Record<string, Model> = {
   },
   'gpt-4-turbo': {
     name: 'GPT 4 Turbo',
-    id: 'gpt-4-turbo-preview',
+    id: 'gpt-4-turbo',
     maxTokens: {
       input: 128000,
       output: 4096
