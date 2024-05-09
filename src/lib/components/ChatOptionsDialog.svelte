@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
   import Icon from '$lib/components/Icon.svelte'
-  import optionsStore, { saveToLocalStorage } from '$lib/stores/options.svelte'
+  import optionsStore, { setOptions } from '$lib/stores/options.svelte'
   import models, { getDefaultModel } from '$lib/data/models'
   import { Api, type FormSubmitEvent } from '$types/common'
 
@@ -26,6 +26,12 @@
   $effect(() => {
     if (open) {
       dialog?.showModal()
+      api = optionsStore.api
+      model = optionsStore.model
+      systemPrompt = optionsStore.systemPrompt
+      maxTokens = optionsStore.maxTokens
+      temperature = optionsStore.temperature
+      stopSequencesString = optionsStore.stopSequences?.join(', ')
     } else {
       dialog?.close()
     }
@@ -58,24 +64,25 @@
 
   function onSubmit(e: FormSubmitEvent) {
     e.preventDefault()
-    optionsStore.api = api
-    optionsStore.model = model
-    optionsStore.systemPrompt = systemPrompt?.trim() || undefined
-    optionsStore.maxTokens = maxTokens
-    optionsStore.temperature = temperature
-    optionsStore.stopSequences = stopSequencesString
+    setOptions({
+      api,
+      model,
+      systemPrompt: systemPrompt?.trim() || undefined,
+      maxTokens,
+      temperature,
+      stopSequences: stopSequencesString
       ?.replaceAll('\\,', '<escaped-comma>')
       .split(',')
       .map(string => string.trim().replaceAll('<escaped-comma>', ','))
       .filter(string => string)
       .slice(0, 3)
-    saveToLocalStorage()
+    })
     open = false
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <dialog
   onclick={handleClick}
   bind:this={dialog}

@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   import { fade } from 'svelte/transition'
-  import { browser } from '$app/environment'
+  import optionsStore, { setOptions } from '$lib/stores/options.svelte'
   import ChatMessage from '$lib/components/ChatMessage.svelte'
   import Icon from '$lib/components/Icon.svelte'
   import MessageForm from '$lib/components/MessageForm.svelte'
-  import optionsStore from '$lib/stores/options.svelte'
-  import { assertMessages } from '$lib/utils/common'
+  import { saveChat, saveChatMessages, saveChatOptions } from '$lib/utils/local-storage'
   import { streamResponse } from '$lib/utils/stream'
-  import { Role, type ApiMessage, type FormSubmitEvent, type Message } from '$types/common'
+  import { Role } from '$types/common'
+  import type { ApiMessage, FormSubmitEvent, Message } from '$types/common'
 
-  let messages = $state<Message[]>([])
+  let { data } = $props()
+
+  let messages = $state<Message[]>([...data.chat.messages])
   let answer = $state<ApiMessage>({ role: Role.ASSISTANT, content: '' })
   let loading = $state(false)
   let showScrollToBottom = $state(false)
@@ -19,19 +20,22 @@
 
   let disabled = $derived(loading || !!answer.content)
 
-  onMount(() => {
-    try {
-      const storedMessages = JSON.parse(localStorage.getItem('messages') || '[]')
-      assertMessages(storedMessages)
-      messages = storedMessages
-    } catch (e) {
-      localStorage.removeItem('messages')
-    }
+  // Navigating to another chat
+  $effect(() => {
+    messages = [...data.chat.messages]
+    setOptions(data.chat.options)
   })
 
+  // Save chat options when they change
+  $effect(() => saveChatOptions(data.chatId, optionsStore))
+
+  // Save chat messages and scroll to bottom when they change
   $effect(() => {
-    if (browser && messages.length) {
-      localStorage.setItem('messages', JSON.stringify(messages))
+    if (messages.length) {
+      if (messages.length === 1) {
+        saveChat(data.chatId, { messages, options: optionsStore })
+      }
+      saveChatMessages(data.chatId, messages)
       setTimeout(scrollToBottom, 100)
     }
   })
@@ -44,12 +48,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: messages.map(message => ({ role: message.role, content: message.content })),
-          api: optionsStore.api,
-          model: optionsStore.model,
-          systemPrompt: optionsStore.systemPrompt,
-          maxTokens: optionsStore.maxTokens,
-          temperature: optionsStore.temperature,
-          stopSequences: optionsStore.stopSequences,
+          ...optionsStore,
           stream: true
         })
       })

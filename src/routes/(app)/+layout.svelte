@@ -3,12 +3,16 @@
   import Drawer from '$lib/components/Drawer.svelte'
   import Icon from '$lib/components/Icon.svelte'
 
-  let { children } = $props()
+  let { children, data } = $props()
   let drawerOpen = $state(false)
   let optionsOpen = $state(false)
 </script>
 
-<Drawer bind:open={drawerOpen} onOpenOptionsDialog={() => optionsOpen = true} />
+<Drawer
+  bind:open={drawerOpen}
+  onOpenOptionsDialog={() => optionsOpen = true}
+  chats={data.chats}
+/>
 <ChatOptionsDialog bind:open={optionsOpen} />
 
 <div class="h-screen flex flex-col">

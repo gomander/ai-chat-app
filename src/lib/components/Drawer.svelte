@@ -1,13 +1,20 @@
 <script lang="ts">
+  import { onNavigate } from '$app/navigation'
   import { fly, fade } from 'svelte/transition'
   import Icon from '$lib/components/Icon.svelte'
+  import type { ChatMeta } from '$types/common'
 
-  let { open = $bindable(false), onOpenOptionsDialog }: {
+  let { open = $bindable(false), onOpenOptionsDialog, chats }: {
     open: boolean
-    onOpenOptionsDialog: () => void
+    onOpenOptionsDialog: () => void,
+    chats: ChatMeta[]
   } = $props()
 
   let drawerElement = $state<HTMLDivElement>()
+
+  onNavigate(() => {
+    open = false
+  })
 
   $effect(() => {
     if (open) {
@@ -31,8 +38,8 @@
 </script>
 
 {#if open}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     onclick={() => open = false}
     class="fixed-overlay drawer-backdrop"
@@ -58,12 +65,22 @@
       </button>
     </div>
 
-    <button
-      onclick={openOptionsDialog}
+    {#each chats as chat}
+      <a
+        href={`/${chat.id}`}
+        class="btn variant-ghost-primary"
+      >
+        {chat.options.name}
+      </a>
+    {/each}
+
+    <a
+      href="/"
       class="btn variant-filled-primary"
     >
-      Open options dialog
-    </button>
+      <Icon name="plus" />
+      <span>New chat</span>
+    </a>
   </div>
 {/if}
 

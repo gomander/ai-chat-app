@@ -66,6 +66,13 @@ export function assertApi(api: any): asserts api is ApiType {
   }
 }
 
+export function getSafeString(value: unknown): string | undefined {
+  if (typeof value === 'string' && value.trim()) {
+    return value.trim()
+  }
+  return undefined
+}
+
 export function getSafeApi(api: any): ApiType {
   return Object.values(Api).includes(api) ? api as ApiType : DEFAULT_API
 }
@@ -80,6 +87,7 @@ export function getSafeModelKey(api: ApiType, model: unknown): string {
 export function getSafeSystemPrompt(model: Model, systemPrompt: unknown): string | undefined {
   if (
     typeof systemPrompt === 'string' &&
+    systemPrompt.trim() &&
     systemPrompt.trim().length < model.maxTokens.input
   ) {
     return systemPrompt.trim()
@@ -110,4 +118,8 @@ export function getSafeStopSequences(stopSequences: unknown): string[] | undefin
 
 export function getSafeError(error: unknown): string {
   return error instanceof Error ? error.message : 'An error occurred'
+}
+
+export function getNewId(): string {
+  return crypto.randomUUID()
 }

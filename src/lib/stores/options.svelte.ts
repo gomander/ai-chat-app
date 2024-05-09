@@ -1,41 +1,14 @@
 import { browser } from '$app/environment'
 import {
   getSafeApi, getSafeMaxTokens, getSafeModelKey, getSafeStopSequences,
-  getSafeSystemPrompt, getSafeTemperature
+  getSafeString, getSafeSystemPrompt, getSafeTemperature
 } from '$lib/utils/common'
-import { DEFAULT_API } from '$lib/data/constants'
+import { DEFAULT_CHAT_OPTIONS } from '$lib/data/constants'
 import models, { getDefaultModel } from '$lib/data/models'
-import type { ApiType } from '$types/common'
-
-interface Options {
-  api: ApiType,
-  model: string,
-  systemPrompt?: string,
-  temperature?: number,
-  maxTokens?: number,
-  stopSequences?: string[]
-}
-
-const defaultOptions: Options = {
-  api: DEFAULT_API,
-  model: getDefaultModel(DEFAULT_API).key
-}
-
-function loadFromLocalStorage() {
-  if (browser) {
-    const localOptions = localStorage.getItem('options')
-    if (localOptions) {
-      try {
-        const parsedOptions = JSON.parse(localOptions)
-        return getSafeOptions(parsedOptions)
-      } catch (e) {}
-    }
-  }
-  return { ...defaultOptions }
-}
+import type { Options } from '$types/common'
 
 function getSafeOptions(data: unknown): Options {
-  const options = { ...defaultOptions }
+  const options = { ...DEFAULT_CHAT_OPTIONS }
   if (!data || typeof data !== 'object') {
     return options
   }
@@ -58,15 +31,22 @@ function getSafeOptions(data: unknown): Options {
   if ('stopSequences' in data) {
     options.stopSequences = getSafeStopSequences(data.stopSequences)
   }
+  if ('name' in data) {
+    options.name = getSafeString(data.name)
+  }
   return options
 }
 
-let options = $state<Options>(loadFromLocalStorage())
+let store = $state(DEFAULT_CHAT_OPTIONS)
 
-export default options
+export default store
 
-export function saveToLocalStorage() {
-  if (browser) {
-    localStorage.setItem('options', JSON.stringify(options))
-  }
+export function setOptions(data: Options) {
+  store.api = data.api
+  store.model = data.model
+  store.systemPrompt = data.systemPrompt
+  store.temperature = data.temperature
+  store.maxTokens = data.maxTokens
+  store.stopSequences = data.stopSequences
+  store.name = data.name
 }

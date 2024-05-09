@@ -30,6 +30,6 @@
     title="Send message"
     aria-label="Send message"
   >
-    <Icon name="send" color="black" />
+    <Icon name="send" />
   </button>
 </form>
