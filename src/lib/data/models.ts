@@ -2,7 +2,7 @@ import type { ApiType, Model } from '$types/common'
 
 const openaiModels: Record<string, Model> = {
   'gpt-3.5-turbo': {
-    name: 'GPT 3.5 Turbo',
+    name: 'GPT-3.5 Turbo',
     id: 'gpt-3.5-turbo',
     maxTokens: {
       input: 16385,
@@ -10,9 +10,9 @@ const openaiModels: Record<string, Model> = {
     },
     maxTemperature: 2
   },
-  'gpt-4-turbo': {
-    name: 'GPT 4 Turbo',
-    id: 'gpt-4-turbo',
+  'gpt-4o': {
+    name: 'GPT-4o',
+    id: 'gpt-4o',
     maxTokens: {
       input: 128000,
       output: 4096
