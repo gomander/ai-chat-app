@@ -1,54 +1,41 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
-  import optionsStore, { setOptions } from '$lib/stores/options.svelte'
+  import ChatOptionsDialog from '$lib/components/ChatOptionsDialog.svelte'
   import ChatMessage from '$lib/components/ChatMessage.svelte'
   import Icon from '$lib/components/Icon.svelte'
   import MessageForm from '$lib/components/MessageForm.svelte'
-  import { saveChat, saveChatMessages, saveChatOptions } from '$lib/utils/local-storage'
   import { streamResponse } from '$lib/utils/stream'
   import { Role } from '$types/common'
   import type { ApiMessage, FormSubmitEvent, Message } from '$types/common'
 
   let { data } = $props()
 
-  let messages = $state<Message[]>([...data.chat.messages])
   let answer = $state<ApiMessage>({ role: Role.ASSISTANT, content: '' })
   let loading = $state(false)
+  let optionsOpen = $state(false)
   let showScrollToBottom = $state(false)
   let messagesContainer = $state<HTMLDivElement>()
   let scrollToDiv = $state<HTMLDivElement>()
 
   let disabled = $derived(loading || !!answer.content)
 
-  // Navigating to another chat
   $effect(() => {
-    messages = [...data.chat.messages]
-    setOptions(data.chat.options)
-  })
-
-  // Save chat options when they change
-  $effect(() => saveChatOptions(data.chatId, optionsStore))
-
-  // Save chat messages and scroll to bottom when they change
-  $effect(() => {
-    if (messages.length) {
-      if (messages.length === 1) {
-        saveChat(data.chatId, { messages, options: optionsStore })
-      }
-      saveChatMessages(data.chatId, messages)
+    if (data.chat.messages.length) {
       setTimeout(scrollToBottom, 100)
+      localStorage.setItem(`chat-${data.chatId}`, JSON.stringify(data.chat.messages))
     }
   })
 
   async function generateResponse() {
+    if (loading) return
     loading = true
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: messages.map(message => ({ role: message.role, content: message.content })),
-          ...optionsStore,
+          messages: data.chat.messages.map(message => ({ role: message.role, content: message.content })),
+          ...data.chat.apiOptions,
           stream: true
         })
       })
@@ -57,14 +44,14 @@
       }
       loading = false
       const interval = setInterval(scrollToBottom, 200)
-      await streamResponse(response.body, answer, optionsStore.api)
+      await streamResponse(response.body, answer, data.chat.apiOptions.api)
       clearInterval(interval)
     } catch (error) {
       console.error(error)
       loading = false
     }
     if (answer.content) {
-      messages.push({ ...answer, id: crypto.randomUUID() })
+      data.chat.messages.push({ ...answer, id: crypto.randomUUID() })
     }
     answer.content = ''
   }
@@ -74,12 +61,12 @@
     const newMessage = String(e.currentTarget.newMessage.value || '').trim()
     if (disabled || newMessage.length < 2) return
     e.currentTarget.reset()
-    messages.push({ role: Role.USER, content: newMessage, id: crypto.randomUUID() })
+    data.chat.messages.push({ role: Role.USER, content: newMessage, id: crypto.randomUUID() })
     generateResponse()
   }
 
   function regenerateResponse() {
-    messages.splice(-1, 1)
+    data.chat.messages.splice(-1, 1)
     generateResponse()
   }
 
@@ -99,13 +86,29 @@
   <title>Chatbot</title>
 </svelte:head>
 
+<ChatOptionsDialog
+  bind:open={optionsOpen}
+  chatId={data.chatId}
+  chatData={data.chat}
+  chats={data.chats}
+/>
+
+<button
+  onclick={() => optionsOpen = true}
+  class="btn-icon variant-glass fixed top-2 right-2 z-10"
+  title="Settings"
+  aria-label="Open settings"
+>
+  <Icon name="settings" />
+</button>
+
 <div class="flex-1 flex flex-col justify-end min-h-96 h-px w-full max-w-3xl mx-auto">
   <div
     onscroll={handleScroll}
     bind:this={messagesContainer}
     class="relative flex flex-col gap-2 overflow-y-scroll pt-16 pb-2 -mx-2"
   >
-    {#each messages as message (message.id)}
+    {#each data.chat.messages as message (message.id)}
       <ChatMessage {...message} />
     {/each}
     {#if answer.content}
@@ -116,7 +119,7 @@
           <Icon name="loading" />
         </div>
       </div>
-    {:else if messages.at(-1)?.role === Role.ASSISTANT}
+    {:else if data.chat.messages.at(-1)?.role === Role.ASSISTANT}
       <button
         onclick={regenerateResponse}
         class="btn-icon btn-icon-sm"
@@ -125,7 +128,7 @@
       >
         <Icon name="regenerate" />
       </button>
-    {:else if messages.at(-1)?.role === Role.USER}
+    {:else if data.chat.messages.at(-1)?.role === Role.USER}
       <button
         onclick={generateResponse}
         class="btn-icon btn-icon-sm"

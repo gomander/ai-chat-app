@@ -7,24 +7,29 @@ export interface Message extends ApiMessage {
   id: string
 }
 
-export interface Options {
+export interface ApiOptions {
   api: ApiType,
   model: string,
   systemPrompt?: string,
   temperature?: number,
   maxTokens?: number,
   stopSequences?: string[]
-  name?: string
+}
+
+export interface DisplayOptions {
+  name: string
 }
 
 export interface ChatData {
   messages: Message[]
-  options: Options
+  apiOptions: ApiOptions
+  displayOptions: DisplayOptions
 }
 
 export interface ChatMeta {
   id: string
-  options: Options
+  apiOptions: ApiOptions
+  displayOptions: DisplayOptions
   updatedAt: number
 }
 

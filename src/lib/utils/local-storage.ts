@@ -1,5 +1,5 @@
 import { getNewId } from '$lib/utils/common'
-import type { ChatData, ChatMeta, Message, Options } from '$types/common'
+import type { ChatData, ChatMeta, Message, ApiOptions } from '$types/common'
 
 export function loadChats(): ChatMeta[] {
   return JSON.parse(localStorage.getItem('chats') || '[]')
@@ -12,7 +12,8 @@ export function loadChat(id: string): ChatData {
     const messages = localStorage.getItem(`chat-${id}`)
     if (messages) {
       return {
-        options: chat.options,
+        apiOptions: chat.apiOptions,
+        displayOptions: chat.displayOptions,
         messages: JSON.parse(messages)
       }
     }
@@ -22,23 +23,24 @@ export function loadChat(id: string): ChatData {
 
 export function saveChat(
   id = getNewId(),
-  { messages, options }: ChatData
+  { messages, apiOptions, displayOptions }: ChatData
 ) {
-  saveChatOptions(id, options)
+  saveChatOptions(id, apiOptions)
   saveChatMessages(id, messages)
   return loadChat(id)
 }
 
-export function saveChatOptions(id: string, options: Options) {
+export function saveChatOptions(id: string, apiOptions: ApiOptions) {
   const chats = loadChats()
   const chat = chats.find(chat => chat.id === id)
   if (chat) {
-    chat.options = options
+    chat.apiOptions = apiOptions
     chat.updatedAt = Date.now()
   } else {
     chats.push({
       id,
-      options,
+      apiOptions,
+      displayOptions: { name: 'New chat' },
       updatedAt: Date.now()
     })
   }

@@ -1,24 +1,30 @@
 <script lang="ts">
+  import { goto } from '$app/navigation'
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
-  import Icon from '$lib/components/Icon.svelte'
-  import optionsStore, { setOptions } from '$lib/stores/options.svelte'
   import models, { getDefaultModel } from '$lib/data/models'
-  import { Api, type FormSubmitEvent } from '$types/common'
+  import { DEFAULT_API_OPTIONS } from '$lib/data/constants'
+  import Icon from '$lib/components/Icon.svelte'
+  import { Api, type ChatData, type ChatMeta, type FormSubmitEvent } from '$types/common'
 
   const apis = [
     { label: 'OpenAI', value: Api.OPENAI },
     { label: 'Anthropic', value: Api.ANTHROPIC }
   ]
 
-  let { open = $bindable(false) }: { open: boolean } = $props()
+  let { open = $bindable(false), chatId, chatData, chats }: {
+    open: boolean
+    chatId: string
+    chatData: ChatData
+    chats: ChatMeta[]
+  } = $props()
 
   let dialog = $state<HTMLDialogElement>()
-  let api = $state(optionsStore.api)
-  let model = $state(optionsStore.model)
-  let systemPrompt = $state(optionsStore.systemPrompt)
-  let maxTokens = $state(optionsStore.maxTokens)
-  let temperature = $state(optionsStore.temperature)
-  let stopSequencesString = $state(optionsStore.stopSequences?.join(', '))
+  let api = $state(DEFAULT_API_OPTIONS.api)
+  let model = $state(DEFAULT_API_OPTIONS.model)
+  let systemPrompt = $state<string>()
+  let maxTokens = $state<number>()
+  let temperature = $state<number>()
+  let stopSequencesString = $state<string>()
 
   let modelMaxTokens = $derived(models[api][model]?.maxTokens.output)
   let modelMaxTemperature = $derived(models[api][model]?.maxTemperature)
@@ -26,12 +32,12 @@
   $effect(() => {
     if (open) {
       dialog?.showModal()
-      api = optionsStore.api
-      model = optionsStore.model
-      systemPrompt = optionsStore.systemPrompt
-      maxTokens = optionsStore.maxTokens
-      temperature = optionsStore.temperature
-      stopSequencesString = optionsStore.stopSequences?.join(', ')
+      api = chatData.apiOptions.api
+      model = chatData.apiOptions.model
+      systemPrompt = chatData.apiOptions.systemPrompt
+      maxTokens = chatData.apiOptions.maxTokens
+      temperature = chatData.apiOptions.temperature
+      stopSequencesString = chatData.apiOptions.stopSequences?.join(', ')
     } else {
       dialog?.close()
     }
@@ -64,20 +70,30 @@
 
   function onSubmit(e: FormSubmitEvent) {
     e.preventDefault()
-    setOptions({
+    const chat = chats.find(chat => chat.id === chatId)
+    if (!chat) return
+    chatData.apiOptions = {
       api,
       model,
       systemPrompt: systemPrompt?.trim() || undefined,
       maxTokens,
       temperature,
       stopSequences: stopSequencesString
-      ?.replaceAll('\\,', '<escaped-comma>')
-      .split(',')
-      .map(string => string.trim().replaceAll('<escaped-comma>', ','))
-      .filter(string => string)
-      .slice(0, 3)
-    })
+        ?.replaceAll('\\,', '<escaped-comma>')
+        .split(',')
+        .map(string => string.trim().replaceAll('<escaped-comma>', ','))
+        .filter(string => string)
+        .slice(0, 3)
+    }
+    chat.apiOptions = chatData.apiOptions
+    localStorage.setItem('chats', JSON.stringify(chats))
     open = false
+  }
+
+  function deleteCurrentChat() {
+    localStorage.removeItem(`chat-${chatId}`)
+    localStorage.setItem('chats', JSON.stringify(chats.filter(chat => chat.id !== chatId)))
+    goto('/')
   }
 </script>
 
@@ -193,7 +209,16 @@
           </svelte:fragment>
         </AccordionItem>
       </Accordion>
-      <button class="btn variant-filled-primary">Save</button>
+      <div class="flex gap-2">
+        <button
+          type="button"
+          onclick={deleteCurrentChat}
+          class="btn variant-filled-error"
+        >
+          Delete chat
+        </button>
+        <button class="btn variant-filled-primary flex-grow">Save</button>
+      </div>
     </form>
   </div>
 </dialog>

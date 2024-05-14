@@ -1,19 +1,43 @@
+import { browser } from '$app/environment'
 import { getNewId } from '$lib/utils/common'
-import { loadChat } from '$lib/utils/local-storage'
-import { DEFAULT_CHAT_OPTIONS } from '$lib/data/constants'
-import type { ChatData } from '$types/common'
+import { DEFAULT_CHAT } from '$lib/data/constants'
+import type { ChatData, ChatMeta } from '$types/common'
+import { redirect } from '@sveltejs/kit'
 
-export function load({ params }): { chatId: string, chat: ChatData } {
-  const chatId = params.chatId || getNewId()
-  try {
-    return {
-      chatId,
-      chat: loadChat(chatId)
+export async function load({ params, parent }): Promise<{ chatId: string, chat: ChatData }> {
+  const { chatId } = params
+  if (browser && chatId) {
+    const layoutData = await parent()
+    try {
+      return {
+        chatId,
+        chat: loadChat(chatId, layoutData.chats)
+      }
+    } catch (e) {
+      console.error(e)
+      redirect(303, '/')
     }
-  } catch (error) {
-    return {
-      chatId,
-      chat: { messages: [], options: DEFAULT_CHAT_OPTIONS }
-    }
+  }
+  return {
+    chatId: chatId || getNewId(),
+    chat: DEFAULT_CHAT
+  }
+}
+
+function loadChat(chatId: string, chats: ChatMeta[]): ChatData {
+  const chatMeta = chats.find(chat => chat.id === chatId)
+  if (!chatMeta) {
+    throw new Error('Chat not found')
+  }
+  const chatMessagesString = localStorage.getItem(`chat-${chatId}`)
+  if (!chatMessagesString) {
+    throw new Error('Chat messages not found')
+  }
+  const chatMessages = JSON.parse(chatMessagesString)
+  // TODO: validate chat data
+  return {
+    messages: chatMessages,
+    apiOptions: chatMeta.apiOptions,
+    displayOptions: chatMeta.displayOptions
   }
 }

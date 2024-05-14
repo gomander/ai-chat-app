@@ -1,16 +1,18 @@
 <script lang="ts">
+  import { page } from '$app/stores'
   import { onNavigate } from '$app/navigation'
   import { fly, fade } from 'svelte/transition'
   import Icon from '$lib/components/Icon.svelte'
   import type { ChatMeta } from '$types/common'
 
-  let { open = $bindable(false), onOpenOptionsDialog, chats }: {
+  let { open = $bindable(false), chats }: {
     open: boolean
-    onOpenOptionsDialog: () => void,
     chats: ChatMeta[]
   } = $props()
 
   let drawerElement = $state<HTMLDivElement>()
+
+  let sortedChats = $derived(chats.toSorted((a, b) => b.updatedAt - a.updatedAt))
 
   onNavigate(() => {
     open = false
@@ -29,11 +31,6 @@
     if (event.key === 'Escape') {
       open = false
     }
-  }
-
-  function openOptionsDialog() {
-    open = false
-    onOpenOptionsDialog()
   }
 </script>
 
@@ -65,12 +62,16 @@
       </button>
     </div>
 
-    {#each chats as chat}
+    {#each sortedChats as chat}
       <a
         href={`/${chat.id}`}
-        class="btn variant-ghost-primary"
+        class="btn {
+          $page.params.chatId === chat.id
+            ? 'variant-glass-primary'
+            : 'hover:variant-ghost-primary'
+        }"
       >
-        {chat.options.name}
+        {chat.displayOptions.name}
       </a>
     {/each}
 
