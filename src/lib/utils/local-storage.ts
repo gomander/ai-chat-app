@@ -1,5 +1,6 @@
 import { getNewId } from '$lib/utils/common'
-import type { ChatData, ChatMeta, Message, ApiOptions } from '$types/common'
+import { DEFAULT_API_OPTIONS, DEFAULT_DISPLAY_OPTIONS } from '$lib/data/constants'
+import type { ChatData, ChatMeta, Message, ApiOptions, DisplayOptions } from '$types/common'
 
 export function loadChats(): ChatMeta[] {
   return JSON.parse(localStorage.getItem('chats') || '[]')
@@ -23,24 +24,38 @@ export function loadChat(id: string): ChatData {
 
 export function saveChat(
   id = getNewId(),
-  { messages, apiOptions, displayOptions }: ChatData
+  { messages, apiOptions, displayOptions }: Partial<ChatData>
 ) {
-  saveChatOptions(id, apiOptions)
-  saveChatMessages(id, messages)
+  saveChatOptions(id, { apiOptions, displayOptions })
+  if (messages) {
+    saveChatMessages(id, messages)
+  }
   return loadChat(id)
 }
 
-export function saveChatOptions(id: string, apiOptions: ApiOptions) {
+export function saveChatOptions(
+  id: string,
+  { apiOptions, displayOptions }: {
+    apiOptions?: ApiOptions,
+    displayOptions?: DisplayOptions
+
+  } = {}
+) {
   const chats = loadChats()
   const chat = chats.find(chat => chat.id === id)
   if (chat) {
-    chat.apiOptions = apiOptions
+    if (apiOptions) {
+      chat.apiOptions = apiOptions
+    }
+    if (displayOptions) {
+      chat.displayOptions = displayOptions
+    }
     chat.updatedAt = Date.now()
   } else {
     chats.push({
       id,
-      apiOptions,
-      displayOptions: { name: 'New chat' },
+      apiOptions: apiOptions || DEFAULT_API_OPTIONS,
+      displayOptions: displayOptions || DEFAULT_DISPLAY_OPTIONS,
       updatedAt: Date.now()
     })
   }

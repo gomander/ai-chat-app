@@ -1,6 +1,6 @@
 import { browser } from '$app/environment'
 import { getNewId } from '$lib/utils/common'
-import { DEFAULT_CHAT } from '$lib/data/constants'
+import { DEFAULT_API_OPTIONS, DEFAULT_CHAT, DEFAULT_DISPLAY_OPTIONS } from '$lib/data/constants'
 import type { ChatData, ChatMeta } from '$types/common'
 import { redirect } from '@sveltejs/kit'
 
@@ -25,14 +25,8 @@ export async function load({ params, parent }): Promise<{ chatId: string, chat: 
 }
 
 function loadChat(chatId: string, chats: ChatMeta[]): ChatData {
-  const chatMeta = chats.find(chat => chat.id === chatId)
-  if (!chatMeta) {
-    throw new Error('Chat not found')
-  }
-  const chatMessagesString = localStorage.getItem(`chat-${chatId}`)
-  if (!chatMessagesString) {
-    throw new Error('Chat messages not found')
-  }
+  const chatMeta = chats.find(chat => chat.id === chatId) || DEFAULT_CHAT
+  const chatMessagesString = localStorage.getItem(`chat-${chatId}`) || '[]'
   const chatMessages = JSON.parse(chatMessagesString)
   // TODO: validate chat data
   return {

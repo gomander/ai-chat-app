@@ -71,8 +71,7 @@
   function onSubmit(e: FormSubmitEvent) {
     e.preventDefault()
     const chat = chats.find(chat => chat.id === chatId)
-    if (!chat) return
-    chatData.apiOptions = {
+    const newOptions = {
       api,
       model,
       systemPrompt: systemPrompt?.trim() || undefined,
@@ -85,7 +84,18 @@
         .filter(string => string)
         .slice(0, 3)
     }
-    chat.apiOptions = chatData.apiOptions
+    chatData.apiOptions = newOptions
+    if (chat) {
+      chat.apiOptions = newOptions
+      chat.updatedAt = Date.now()
+    } else {
+      chats.push({
+        id: chatId,
+        apiOptions: newOptions,
+        displayOptions: chatData.displayOptions,
+        updatedAt: Date.now()
+      })
+    }
     localStorage.setItem('chats', JSON.stringify(chats))
     open = false
   }

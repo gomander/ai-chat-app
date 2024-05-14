@@ -6,7 +6,7 @@
   import MessageForm from '$lib/components/MessageForm.svelte'
   import { streamResponse } from '$lib/utils/stream'
   import { Role } from '$types/common'
-  import type { ApiMessage, FormSubmitEvent, Message } from '$types/common'
+  import type { ApiMessage, FormSubmitEvent } from '$types/common'
 
   let { data } = $props()
 
@@ -22,7 +22,6 @@
   $effect(() => {
     if (data.chat.messages.length) {
       setTimeout(scrollToBottom, 100)
-      localStorage.setItem(`chat-${data.chatId}`, JSON.stringify(data.chat.messages))
     }
   })
 
@@ -34,7 +33,9 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: data.chat.messages.map(message => ({ role: message.role, content: message.content })),
+          messages: data.chat.messages.map(message => ({
+            role: message.role, content: message.content
+          })),
           ...data.chat.apiOptions,
           stream: true
         })
@@ -52,6 +53,18 @@
     }
     if (answer.content) {
       data.chat.messages.push({ ...answer, id: crypto.randomUUID() })
+      const chat = data.chats.find(chat => chat.id === data.chatId)
+      if (chat) {
+        chat.updatedAt = Date.now()
+      } else {
+        data.chats.push({
+          id: data.chatId,
+          apiOptions: data.chat.apiOptions,
+          displayOptions: data.chat.displayOptions,
+          updatedAt: Date.now()
+        })
+      }
+      localStorage.setItem(`chat-${data.chatId}`, JSON.stringify(data.chat.messages))
     }
     answer.content = ''
   }
