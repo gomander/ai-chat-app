@@ -1,21 +1,31 @@
 <script lang="ts">
   import { parse } from 'marked'
   import DOMPurify from 'dompurify'
+  import hljs from 'highlight.js'
   import type { ApiMessage } from '$types/common'
 
   let { content, role }: ApiMessage = $props()
 
-  const dirtyHtml = parse(content)
+  let messageContentDiv = $state<HTMLDivElement>()
+
+  let cleanHtml = $derived(DOMPurify.sanitize(parse(content) as string))
+
+  $effect(() => {
+    cleanHtml && messageContentDiv?.querySelectorAll<HTMLElement>('pre code').forEach(el => {
+      hljs.highlightElement(el);
+    });
+  })
 </script>
 
 <div
   class="relative wrapper-{role}"
   aria-label="{role} message"
 >
-  <div class="p-3 mx-2 rounded-2xl max-w-prose flex flex-col gap-2 overflow-x-auto message message-{role}">
-    {#await dirtyHtml then htmlContent}
-      {@html DOMPurify.sanitize(htmlContent)}
-    {/await}
+  <div
+    bind:this={messageContentDiv}
+    class="p-3 mx-2 rounded-2xl max-w-prose flex flex-col gap-2 overflow-x-auto message message-{role}"
+  >
+    {@html cleanHtml}
   </div>
 </div>
 
