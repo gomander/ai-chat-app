@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation'
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
   import models, { getDefaultModel } from '$lib/data/models'
-  import { DEFAULT_API_OPTIONS } from '$lib/data/constants'
+  import { DEFAULT_API_OPTIONS, DEFAULT_DISPLAY_OPTIONS } from '$lib/data/constants'
   import Icon from '$lib/components/Icon.svelte'
   import { Api, type ChatData, type ChatMeta, type FormSubmitEvent } from '$types/common'
 
@@ -19,6 +19,7 @@
   } = $props()
 
   let dialog = $state<HTMLDialogElement>()
+  let name = $state(DEFAULT_DISPLAY_OPTIONS.name)
   let api = $state(DEFAULT_API_OPTIONS.api)
   let model = $state(DEFAULT_API_OPTIONS.model)
   let systemPrompt = $state<string>()
@@ -32,6 +33,7 @@
   $effect(() => {
     if (open) {
       dialog?.showModal()
+      name = chatData.displayOptions.name
       api = chatData.apiOptions.api
       model = chatData.apiOptions.model
       systemPrompt = chatData.apiOptions.systemPrompt
@@ -71,7 +73,7 @@
   function onSubmit(e: FormSubmitEvent) {
     e.preventDefault()
     const chat = chats.find(chat => chat.id === chatId)
-    const newOptions = {
+    const newApiOptions = {
       api,
       model,
       systemPrompt: systemPrompt?.trim() || undefined,
@@ -84,15 +86,18 @@
         .filter(string => string)
         .slice(0, 3)
     }
-    chatData.apiOptions = newOptions
+    chatData.apiOptions = newApiOptions
+    const newDisplayOptions = { name }
+    chatData.displayOptions = newDisplayOptions
     if (chat) {
-      chat.apiOptions = newOptions
+      chat.apiOptions = newApiOptions
+      chat.displayOptions = newDisplayOptions
       chat.updatedAt = Date.now()
     } else {
       chats.push({
         id: chatId,
-        apiOptions: newOptions,
-        displayOptions: chatData.displayOptions,
+        apiOptions: newApiOptions,
+        displayOptions: newDisplayOptions,
         updatedAt: Date.now()
       })
     }
@@ -130,6 +135,18 @@
       onsubmit={onSubmit}
       class="flex flex-col gap-2"
     >
+      <label class="label">
+        <span>Chat name</span>
+        <input
+          type="text"
+          name="name"
+          bind:value={name}
+          placeholder={DEFAULT_DISPLAY_OPTIONS.name}
+          autocomplete="off"
+          class="input"
+        >
+      </label>
+
       <div class="flex gap-2">
         <label class="label flex-1">
           <span>API</span>

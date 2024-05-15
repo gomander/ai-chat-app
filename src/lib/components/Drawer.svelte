@@ -52,7 +52,7 @@
     transition:fly={{ x: -320 }}
   >
     <div class="flex justify-between items-center">
-      <h2 class="text-2xl">Options</h2>
+      <h2 class="text-2xl">Chats</h2>
 
       <button
         onclick={() => open = false}
