@@ -21,7 +21,7 @@
     <Icon name="menu" />
   </button>
 
-  <main class="flex-1 flex flex-col px-4 pb-2 h-px">
+  <main class="flex-1 flex flex-col px-4 h-px">
     {@render children()}
   </main>
 </div>

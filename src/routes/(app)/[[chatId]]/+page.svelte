@@ -115,11 +115,11 @@
   <Icon name="settings" />
 </button>
 
-<div class="flex-1 flex flex-col justify-end min-h-96 h-px w-full max-w-3xl mx-auto">
+<div class="relative flex-1 flex flex-col justify-end min-h-96 h-px w-full max-w-7xl mx-auto">
   <div
     onscroll={handleScroll}
     bind:this={messagesContainer}
-    class="relative flex flex-col gap-2 overflow-y-scroll pt-16 pb-2 -mx-2"
+    class="relative flex flex-col gap-2 overflow-y-scroll pt-16 -mx-2 w-full"
   >
     {#each data.chat.messages as message (message.id)}
       <ChatMessage {...message} />
@@ -166,7 +166,10 @@
         </button>
       </div>
     {/if}
-    <div bind:this={scrollToDiv}></div>
+    <div
+      bind:this={scrollToDiv}
+      class="mt-12"
+    ></div>
   </div>
 
   <MessageForm {onSubmit} {disabled} />

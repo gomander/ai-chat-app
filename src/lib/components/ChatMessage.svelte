@@ -23,7 +23,7 @@
 >
   <div
     bind:this={messageContentDiv}
-    class="p-3 mx-2 rounded-2xl max-w-prose flex flex-col gap-2 overflow-x-auto message message-{role}"
+    class="p-3 mx-2 rounded-2xl max-w-4xl flex flex-col gap-2 overflow-x-auto message message-{role}"
   >
     {@html cleanHtml}
   </div>
