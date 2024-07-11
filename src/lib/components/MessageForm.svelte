@@ -10,7 +10,7 @@
 
 <form
   onsubmit={onSubmit}
-  class="absolute bottom-2 w-full -mx-2 flex gap-2"
+  class="absolute bottom-2 w-full -mx-2 flex justify-center gap-2"
 >
   <input
     type="text"
@@ -20,7 +20,7 @@
     minlength="2"
     placeholder="Type a message"
     {disabled}
-    class="input shadow drop-shadow"
+    class="input shadow drop-shadow max-w-4xl"
   >
 
   <button
