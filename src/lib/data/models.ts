@@ -1,6 +1,15 @@
 import type { ApiType, Model } from '$types/common'
 
 const openaiModels: Record<string, Model> = {
+  'gpt-4o-mini': {
+    name: 'GPT-4o mini',
+    id: 'gpt-4o-mini',
+    maxTokens: {
+      input: 128000,
+      output: 4096
+    },
+    maxTemperature: 2
+  },
   'gpt-3.5-turbo': {
     name: 'GPT-3.5 Turbo',
     id: 'gpt-3.5-turbo',
