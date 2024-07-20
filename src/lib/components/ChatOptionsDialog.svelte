@@ -1,22 +1,19 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
+  import chatStore from '$lib/stores/chat.svelte'
+  import chatsStore from '$lib/stores/chats.svelte'
   import models, { getDefaultModel } from '$lib/data/models'
   import { DEFAULT_API_OPTIONS, DEFAULT_DISPLAY_OPTIONS } from '$lib/data/constants'
   import Icon from '$lib/components/Icon.svelte'
-  import { Api, type ChatData, type ChatMeta, type FormSubmitEvent } from '$types/common'
+  import { Api, type FormSubmitEvent } from '$types/common'
 
   const apis = [
     { label: 'OpenAI', value: Api.OPENAI },
     { label: 'Anthropic', value: Api.ANTHROPIC }
   ]
 
-  let { open = $bindable(false), chatId, chatData, chats }: {
-    open: boolean
-    chatId: string
-    chatData: ChatData
-    chats: ChatMeta[]
-  } = $props()
+  let { open = $bindable(false) }: { open: boolean } = $props()
 
   let dialog = $state<HTMLDialogElement>()
   let name = $state(DEFAULT_DISPLAY_OPTIONS.name)
@@ -33,13 +30,13 @@
   $effect(() => {
     if (open) {
       dialog?.showModal()
-      name = chatData.displayOptions.name
-      api = chatData.apiOptions.api
-      model = chatData.apiOptions.model
-      systemPrompt = chatData.apiOptions.systemPrompt
-      maxTokens = chatData.apiOptions.maxTokens
-      temperature = chatData.apiOptions.temperature
-      stopSequencesString = chatData.apiOptions.stopSequences?.join(', ')
+      name = chatStore.chat.displayOptions.name
+      api = chatStore.chat.apiOptions.api
+      model = chatStore.chat.apiOptions.model
+      systemPrompt = chatStore.chat.apiOptions.systemPrompt
+      maxTokens = chatStore.chat.apiOptions.maxTokens
+      temperature = chatStore.chat.apiOptions.temperature
+      stopSequencesString = chatStore.chat.apiOptions.stopSequences?.join(', ')
     } else {
       dialog?.close()
     }
@@ -72,7 +69,7 @@
 
   function onSubmit(e: FormSubmitEvent) {
     e.preventDefault()
-    const chat = chats.find(chat => chat.id === chatId)
+    const chat = chatsStore.chats.find(chat => chat.id === chatStore.id)
     const newApiOptions = {
       api,
       model,
@@ -86,28 +83,32 @@
         .filter(string => string)
         .slice(0, 3)
     }
-    chatData.apiOptions = newApiOptions
+    chatStore.chat.apiOptions = newApiOptions
     const newDisplayOptions = { name }
-    chatData.displayOptions = newDisplayOptions
+    chatStore.chat.displayOptions = newDisplayOptions
     if (chat) {
       chat.apiOptions = newApiOptions
       chat.displayOptions = newDisplayOptions
       chat.updatedAt = Date.now()
     } else {
-      chats.push({
-        id: chatId,
+      chatsStore.chats.push({
+        id: chatStore.id,
         apiOptions: newApiOptions,
         displayOptions: newDisplayOptions,
         updatedAt: Date.now()
       })
     }
-    localStorage.setItem('chats', JSON.stringify(chats))
+    localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
     open = false
   }
 
   function deleteCurrentChat() {
-    localStorage.removeItem(`chat-${chatId}`)
-    localStorage.setItem('chats', JSON.stringify(chats.filter(chat => chat.id !== chatId)))
+    localStorage.removeItem(`chat-${chatStore.id}`)
+    localStorage.setItem(
+      'chats',
+      JSON.stringify(chatsStore.chats.filter(chat => chat.id !== chatStore.id))
+    )
+    open = false
     goto('/')
   }
 </script>
@@ -141,7 +142,7 @@
           type="text"
           name="name"
           bind:value={name}
-          placeholder={DEFAULT_DISPLAY_OPTIONS.name}
+          placeholder={DEFAULT_DISPLAY_OPTIONS.name || 'New chat'}
           autocomplete="off"
           class="input"
         >

@@ -1,18 +1,15 @@
 <script lang="ts">
-  import { page } from '$app/stores'
   import { onNavigate } from '$app/navigation'
   import { fly, fade } from 'svelte/transition'
+  import chatStore from '$lib/stores/chat.svelte'
+  import chatsStore from '$lib/stores/chats.svelte'
   import Icon from '$lib/components/Icon.svelte'
-  import type { ChatMeta } from '$types/common'
 
-  let { open = $bindable(false), chats }: {
-    open: boolean
-    chats: ChatMeta[]
-  } = $props()
+  let { open = $bindable(false) }: { open: boolean } = $props()
 
   let drawerElement = $state<HTMLDivElement>()
 
-  let sortedChats = $derived(chats.toSorted((a, b) => b.updatedAt - a.updatedAt))
+  let sortedChats = $derived(chatsStore.chats.toSorted((a, b) => b.updatedAt - a.updatedAt))
 
   onNavigate(() => {
     open = false
@@ -66,12 +63,12 @@
       <a
         href={`/${chat.id}`}
         class="btn {
-          $page.params.chatId === chat.id
+          chatStore.id === chat.id
             ? 'variant-glass-primary'
             : 'hover:variant-ghost-primary'
         }"
       >
-        {chat.displayOptions.name}
+        {chat.displayOptions.name || 'New chat'}
       </a>
     {/each}
 

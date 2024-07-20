@@ -1,5 +1,9 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import { fade } from 'svelte/transition'
+  import { afterNavigate } from '$app/navigation'
+  import chatStore from '$lib/stores/chat.svelte'
+  import chatsStore from '$lib/stores/chats.svelte'
   import ChatOptionsDialog from '$lib/components/ChatOptionsDialog.svelte'
   import ChatMessage from '$lib/components/ChatMessage.svelte'
   import Icon from '$lib/components/Icon.svelte'
@@ -19,8 +23,16 @@
 
   let disabled = $derived(loading || !!answer.content)
 
+  function updateChatStore() {
+    chatStore.chat = data.chat
+    chatStore.id = data.chatId
+  }
+
+  onMount(updateChatStore)
+  afterNavigate(updateChatStore)
+
   $effect(() => {
-    if (data.chat.messages.length) {
+    if (chatStore.chat.messages.length) {
       setTimeout(scrollToBottom, 100)
     }
   })
@@ -33,10 +45,10 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: data.chat.messages.map(message => ({
+          messages: chatStore.chat.messages.map(message => ({
             role: message.role, content: message.content
           })),
-          ...data.chat.apiOptions,
+          ...chatStore.chat.apiOptions,
           stream: true
         })
       })
@@ -45,26 +57,27 @@
       }
       loading = false
       const interval = setInterval(scrollToBottom, 200)
-      await streamResponse(response.body, answer, data.chat.apiOptions.api)
+      await streamResponse(response.body, answer, chatStore.chat.apiOptions.api)
       clearInterval(interval)
     } catch (error) {
       console.error(error)
       loading = false
     }
     if (answer.content) {
-      data.chat.messages.push({ ...answer, id: crypto.randomUUID() })
-      const chat = data.chats.find(chat => chat.id === data.chatId)
+      chatStore.chat.messages.push({ ...answer, id: crypto.randomUUID() })
+      const chat = chatsStore.chats.find(chat => chat.id === chatStore.id)
       if (chat) {
         chat.updatedAt = Date.now()
       } else {
-        data.chats.push({
-          id: data.chatId,
-          apiOptions: data.chat.apiOptions,
-          displayOptions: data.chat.displayOptions,
+        chatsStore.chats.push({
+          id: chatStore.id,
+          apiOptions: chatStore.chat.apiOptions,
+          displayOptions: chatStore.chat.displayOptions,
           updatedAt: Date.now()
         })
+        localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
       }
-      localStorage.setItem(`chat-${data.chatId}`, JSON.stringify(data.chat.messages))
+      localStorage.setItem(`chat-${chatStore.id}`, JSON.stringify(chatStore.chat.messages))
     }
     answer.content = ''
   }
@@ -74,12 +87,12 @@
     const newMessage = String(e.currentTarget.newMessage.value || '').trim()
     if (disabled || newMessage.length < 2) return
     e.currentTarget.reset()
-    data.chat.messages.push({ role: Role.USER, content: newMessage, id: crypto.randomUUID() })
+    chatStore.chat.messages.push({ role: Role.USER, content: newMessage, id: crypto.randomUUID() })
     generateResponse()
   }
 
   function regenerateResponse() {
-    data.chat.messages.splice(-1, 1)
+    chatStore.chat.messages.splice(-1, 1)
     generateResponse()
   }
 
@@ -99,12 +112,7 @@
   <title>Chatbot</title>
 </svelte:head>
 
-<ChatOptionsDialog
-  bind:open={optionsOpen}
-  chatId={data.chatId}
-  chatData={data.chat}
-  chats={data.chats}
-/>
+<ChatOptionsDialog bind:open={optionsOpen} />
 
 <button
   onclick={() => optionsOpen = true}
@@ -115,13 +123,25 @@
   <Icon name="settings" />
 </button>
 
+{#if !chatStore.chat.messages.length}
+  <div class="h-full flex flex-col justify-center items-center">
+    {#if chatStore.chat.displayOptions.name}
+      <p>
+        Send a message to <strong>{chatStore.chat.displayOptions.name}</strong> from the input below
+      </p>
+    {:else}
+      <p>Start a new chat by sending a message from the input below</p>
+    {/if}
+  </div>
+{/if}
+
 <div class="relative flex-1 flex flex-col justify-end min-h-96 h-px w-full max-w-7xl mx-auto">
   <div
     onscroll={handleScroll}
     bind:this={messagesContainer}
     class="relative flex flex-col gap-2 overflow-y-scroll pt-16 -mx-2 w-full"
   >
-    {#each data.chat.messages as message (message.id)}
+    {#each chatStore.chat.messages as message (message.id)}
       <ChatMessage {...message} />
     {/each}
     {#if answer.content}
@@ -132,7 +152,7 @@
           <Icon name="loading" />
         </div>
       </div>
-    {:else if data.chat.messages.at(-1)?.role === Role.ASSISTANT}
+    {:else if chatStore.chat.messages.at(-1)?.role === Role.ASSISTANT}
       <button
         onclick={regenerateResponse}
         class="btn-icon btn-icon-sm"
@@ -141,7 +161,7 @@
       >
         <Icon name="regenerate" />
       </button>
-    {:else if data.chat.messages.at(-1)?.role === Role.USER}
+    {:else if chatStore.chat.messages.at(-1)?.role === Role.USER}
       <button
         onclick={generateResponse}
         class="btn-icon btn-icon-sm"

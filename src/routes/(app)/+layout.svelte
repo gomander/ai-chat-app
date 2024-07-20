@@ -1,15 +1,18 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
+  import chatsStore from '$lib/stores/chats.svelte'
   import Drawer from '$lib/components/Drawer.svelte'
   import Icon from '$lib/components/Icon.svelte'
 
   let { children, data } = $props()
   let drawerOpen = $state(false)
+
+  onMount(() => {
+    chatsStore.chats = data.chats
+  })
 </script>
 
-<Drawer
-  bind:open={drawerOpen}
-  chats={data.chats}
-/>
+<Drawer bind:open={drawerOpen} />
 
 <div class="h-screen flex flex-col">
   <button
