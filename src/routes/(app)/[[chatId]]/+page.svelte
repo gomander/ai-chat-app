@@ -41,6 +41,9 @@
     if (loading) return
     loading = true
     try {
+      if (!chatStore.chat.displayOptions.name) {
+        generateChatName()
+      }
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,6 +97,20 @@
   function regenerateResponse() {
     chatStore.chat.messages.splice(-1, 1)
     generateResponse()
+  }
+
+  async function generateChatName() {
+    const response = await fetch('/api/chat/name', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: chatStore.chat.messages.map(message => ({
+          role: message.role, content: message.content
+        }))
+      })
+    })
+    const { name } = await response.json()
+    chatStore.chat.displayOptions.name = name
   }
 
   function handleScroll() {
