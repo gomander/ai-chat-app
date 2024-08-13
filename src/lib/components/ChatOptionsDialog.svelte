@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
+  import { fileSave } from 'browser-fs-access'
   import chatStore from '$lib/stores/chat.svelte'
   import chatsStore from '$lib/stores/chats.svelte'
   import models, { getDefaultModel } from '$lib/data/models'
@@ -102,6 +103,17 @@
     open = false
   }
 
+  function downloadChat() {
+    fileSave(
+      new Blob([JSON.stringify(chatStore.chat)]),
+      {
+        fileName: `${chatStore.chat.displayOptions.name || 'New chat'}.json`,
+        mimeTypes: ['application/json'],
+        extensions: ['.json']
+      }
+    )
+  }
+
   function deleteCurrentChat() {
     localStorage.removeItem(`chat-${chatStore.id}`)
     localStorage.setItem(
@@ -195,45 +207,55 @@
           <svelte:fragment slot="iconClosed"><Icon name="caretUp" /></svelte:fragment>
           <svelte:fragment slot="iconOpen"><Icon name="caretDown" /></svelte:fragment>
           <svelte:fragment slot="content">
-            <div class="pt-2 flex gap-2">
+            <div class="pt-2 flex flex-col gap-2">
+              <div class="flex gap-2">
+                <label class="label">
+                  <span>Max tokens (1 - {modelMaxTokens})</span>
+                  <input
+                    type="number"
+                    name="maxTokens"
+                    min={1}
+                    max={modelMaxTokens}
+                    bind:value={maxTokens}
+                    placeholder="Not set"
+                    class="input"
+                  >
+                </label>
+
+                <label class="label">
+                  <span>Temperature (0 - {modelMaxTemperature})</span>
+                  <input
+                    type="number"
+                    name="temperature"
+                    min={0}
+                    max={modelMaxTemperature}
+                    step={0.1}
+                    bind:value={temperature}
+                    placeholder="Not set"
+                    class="input"
+                  >
+                </label>
+              </div>
+
               <label class="label">
-                <span>Max tokens (1 - {modelMaxTokens})</span>
+                <span>Stop sequences (max 4, comma separated)</span>
                 <input
-                  type="number"
-                  name="maxTokens"
-                  min={1}
-                  max={modelMaxTokens}
-                  bind:value={maxTokens}
-                  placeholder="Not set"
+                  type="text"
+                  name="stopSequences"
+                  bind:value={stopSequencesString}
+                  placeholder="None set"
                   class="input"
                 >
               </label>
 
-              <label class="label">
-                <span>Temperature (0 - {modelMaxTemperature})</span>
-                <input
-                  type="number"
-                  name="temperature"
-                  min={0}
-                  max={modelMaxTemperature}
-                  step={0.1}
-                  bind:value={temperature}
-                  placeholder="Not set"
-                  class="input"
-                >
-              </label>
-            </div>
-
-            <label class="label">
-              <span>Stop sequences (max 4, comma separated)</span>
-              <input
-                type="text"
-                name="stopSequences"
-                bind:value={stopSequencesString}
-                placeholder="None set"
-                class="input"
+              <button
+                class="btn variant-filled-surface"
+                onclick={downloadChat}
               >
-            </label>
+                <Icon name="download" />
+                <span>Download chat</span>
+              </button>
+            </div>
           </svelte:fragment>
         </AccordionItem>
       </Accordion>
@@ -243,9 +265,13 @@
           onclick={deleteCurrentChat}
           class="btn variant-filled-error"
         >
-          Delete chat
+          <Icon name="delete" />
+          <span>Delete chat</span>
         </button>
-        <button class="btn variant-filled-primary flex-grow">Save</button>
+        <button class="btn variant-filled-primary flex-grow">
+          <Icon name="save" />
+          <span>Save</span>
+        </button>
       </div>
     </form>
   </div>
