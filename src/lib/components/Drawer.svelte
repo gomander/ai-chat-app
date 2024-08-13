@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onNavigate } from '$app/navigation'
   import { fly, fade } from 'svelte/transition'
+  import { fileOpen } from 'browser-fs-access'
   import chatStore from '$lib/stores/chat.svelte'
   import chatsStore from '$lib/stores/chats.svelte'
   import Icon from '$lib/components/Icon.svelte'
@@ -28,6 +29,24 @@
     if (event.key === 'Escape') {
       open = false
     }
+  }
+
+  async function uploadChat() {
+    const file = await fileOpen({
+      mimeTypes: ['application/json'],
+      extensions: ['json']
+    })
+    const text = await file.text()
+    const { apiOptions, displayOptions, messages } = JSON.parse(text)
+    const chatId = crypto.randomUUID()
+    chatsStore.chats.push({
+      id: chatId,
+      apiOptions,
+      displayOptions,
+      updatedAt: Date.now()
+    })
+    localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
+    localStorage.setItem(`chat-${chatId}`, JSON.stringify(messages))
   }
 </script>
 
@@ -79,6 +98,14 @@
       <Icon name="plus" />
       <span>New chat</span>
     </a>
+
+    <button
+      class="btn variant-filled-surface"
+      onclick={uploadChat}
+    >
+      <Icon name="upload" />
+      <span>Upload chat</span>
+    </button>
   </div>
 {/if}
 
