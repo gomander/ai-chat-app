@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onNavigate } from '$app/navigation'
+  import { onNavigate, goto } from '$app/navigation'
   import { fly, fade } from 'svelte/transition'
   import { fileOpen } from 'browser-fs-access'
   import chatStore from '$lib/stores/chat.svelte'
@@ -47,6 +47,7 @@
     })
     localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
     localStorage.setItem(`chat-${chatId}`, JSON.stringify(messages))
+    goto(`/${chatId}`)
   }
 </script>
 

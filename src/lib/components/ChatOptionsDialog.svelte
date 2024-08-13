@@ -116,10 +116,8 @@
 
   function deleteCurrentChat() {
     localStorage.removeItem(`chat-${chatStore.id}`)
-    localStorage.setItem(
-      'chats',
-      JSON.stringify(chatsStore.chats.filter(chat => chat.id !== chatStore.id))
-    )
+    chatsStore.chats = chatsStore.chats.filter(chat => chat.id !== chatStore.id)
+    localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
     open = false
     goto('/')
   }
