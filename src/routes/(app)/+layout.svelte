@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   import chatsStore from '$lib/stores/chats.svelte'
   import Drawer from '$lib/components/Drawer.svelte'
   import Icon from '$lib/components/Icon.svelte'
@@ -7,9 +6,7 @@
   let { children, data } = $props()
   let drawerOpen = $state(false)
 
-  onMount(() => {
-    chatsStore.chats = data.chats
-  })
+  chatsStore.chats = data.chats
 </script>
 
 <Drawer bind:open={drawerOpen} />

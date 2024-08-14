@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   import { fade } from 'svelte/transition'
   import { afterNavigate } from '$app/navigation'
   import chatStore from '$lib/stores/chat.svelte'
@@ -28,7 +27,7 @@
     chatStore.id = data.chatId
   }
 
-  onMount(updateChatStore)
+  updateChatStore()
   afterNavigate(updateChatStore)
 
   $effect(() => {

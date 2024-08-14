@@ -6,15 +6,10 @@ export const ssr = false
 export function load(): { chats: ChatMeta[] } {
   const chats: ChatMeta[] = []
   if (browser) {
-    const storedChatsString = localStorage.getItem('chats')
-    if (storedChatsString) {
-      try {
-        const storedChats = JSON.parse(storedChatsString)
-        // TODO: validate stored chats
-        chats.push(...storedChats)
-      } catch (e) {
-        console.error(e)
-      }
+    try {
+      chats.push(...JSON.parse(localStorage.getItem('chats') || '[]'))
+    } catch (e) {
+      console.error(e)
     }
   }
   return { chats }

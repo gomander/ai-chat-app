@@ -1,11 +1,11 @@
 import { browser } from '$app/environment'
 import { getNewId } from '$lib/utils/common'
-import { DEFAULT_API_OPTIONS, DEFAULT_CHAT, DEFAULT_DISPLAY_OPTIONS } from '$lib/data/constants'
+import { DEFAULT_CHAT } from '$lib/data/constants'
 import type { ChatData, ChatMeta } from '$types/common'
 import { redirect } from '@sveltejs/kit'
 
 export async function load({ params, parent }): Promise<{ chatId: string, chat: ChatData }> {
-  const { chatId } = params
+  const chatId = params.chatId || getNewId()
   if (browser && chatId) {
     const layoutData = await parent()
     try {
@@ -19,19 +19,16 @@ export async function load({ params, parent }): Promise<{ chatId: string, chat: 
     }
   }
   return {
-    chatId: chatId || getNewId(),
+    chatId,
     chat: DEFAULT_CHAT
   }
 }
 
 function loadChat(chatId: string, chats: ChatMeta[]): ChatData {
-  const chatMeta = chats.find(chat => chat.id === chatId) || DEFAULT_CHAT
-  const chatMessagesString = localStorage.getItem(`chat-${chatId}`) || '[]'
-  const chatMessages = JSON.parse(chatMessagesString)
-  // TODO: validate chat data
+  const { apiOptions, displayOptions } = chats.find(chat => chat.id === chatId) || DEFAULT_CHAT
   return {
-    messages: chatMessages,
-    apiOptions: chatMeta.apiOptions,
-    displayOptions: chatMeta.displayOptions
+    messages: JSON.parse(localStorage.getItem(`chat-${chatId}`) || '[]'),
+    apiOptions,
+    displayOptions
   }
 }
