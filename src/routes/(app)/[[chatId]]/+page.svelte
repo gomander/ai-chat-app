@@ -77,7 +77,6 @@
           displayOptions: chatStore.chat.displayOptions,
           updatedAt: Date.now()
         })
-        localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
       }
       localStorage.setItem(`chat-${chatStore.id}`, JSON.stringify(chatStore.chat.messages))
     }

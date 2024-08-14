@@ -99,7 +99,6 @@
         updatedAt: Date.now()
       })
     }
-    localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
     open = false
   }
 
@@ -117,7 +116,6 @@
   function deleteCurrentChat() {
     localStorage.removeItem(`chat-${chatStore.id}`)
     chatsStore.chats = chatsStore.chats.filter(chat => chat.id !== chatStore.id)
-    localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
     open = false
     goto('/')
   }

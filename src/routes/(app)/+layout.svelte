@@ -7,6 +7,10 @@
   let drawerOpen = $state(false)
 
   chatsStore.chats = data.chats
+
+  $effect(() => {
+    localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
+  })
 </script>
 
 <Drawer bind:open={drawerOpen} />
