@@ -45,8 +45,8 @@
       displayOptions,
       updatedAt: Date.now()
     })
-    localStorage.setItem('chats', JSON.stringify(chatsStore.chats))
-    localStorage.setItem(`chat-${chatId}`, JSON.stringify(messages))
+    chatStore.id = chatId
+    chatStore.chat = messages
     goto(`/${chatId}`)
   }
 </script>

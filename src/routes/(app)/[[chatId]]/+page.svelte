@@ -36,6 +36,10 @@
     }
   })
 
+  $effect(() => {
+    localStorage.setItem(`chat-${chatStore.id}`, JSON.stringify(chatStore.chat.messages))
+  })
+
   async function generateResponse() {
     if (loading) return
     loading = true
@@ -78,7 +82,6 @@
           updatedAt: Date.now()
         })
       }
-      localStorage.setItem(`chat-${chatStore.id}`, JSON.stringify(chatStore.chat.messages))
     }
     answer.content = ''
   }
