@@ -1,6 +1,6 @@
 {
-  "name": "chatbot-app",
-  "description": "A work-in-progress chatbot app built with Svelte 5 that uses OpenAI and Anthropic APIs.",
+  "name": "ai-chat-app",
+  "description": "A work-in-progress AI chat app built with Svelte 5 that uses OpenAI and Anthropic APIs.",
   "author": "Gunnar Omander <gunnar@gomander.dev> (https://gomander.dev)",
   "homepage": "https://github.com/gomander/chatbot",
   "version": "0.0.1",
