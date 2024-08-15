@@ -27,5 +27,9 @@ export async function generateAnthropicResponse(
   if (options.stream) {
     return anthropic.messages.stream(config).toReadableStream()
   }
-  return (await anthropic.messages.create(config)).content[0].text
+  const response = (await anthropic.messages.create(config)).content[0]
+  if (response.type === 'text') {
+    return response.text
+  }
+  return 'tool use not supported'
 }
