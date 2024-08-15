@@ -1,38 +1,40 @@
-# create-svelte
+# This project is a WIP!
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This app is a simple but customizable AI chat app that aims to give the user as much control as possible.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Swap between OpenAI and Anthropic models at any time, even mid-conversation
+- Input your own system prompt
+- Response streaming and option to regenerate responses
+- No account needed, all your conversations are stored locally and are portable
+- Customize model temperature, max tokens, and stop sequences
+- Automatic chat naming
+- Markdown support with syntax highlighting for codeblocks
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Todo
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- [x] OpenAI integration
+- [x] Anthropic integration
+- [x] Custom system prompts
+- [x] Response streaming
+- [x] Markdown support
+- [x] Syntax highlighting
+- [x] Advanced model options
+- [x] Regenerating responses
+- [x] Automatic chat naming
+- [x] Export and import conversations
+- [ ] One-click experiences
+- [ ] Chat icons
+- [ ] Message editing
+- [ ] GoogleAI integration
+- [ ] Switch between regenerated responses
+- [ ] Vision
+- [ ] Image generation?
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Create a `.env` file using the template.  
+Install dependencies with `pnpm i`, then run the dev server with `pnpm dev`.
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Pull requests and issues welcome!
