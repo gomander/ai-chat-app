@@ -13,7 +13,8 @@ export interface ApiOptions {
   systemPrompt?: string,
   temperature?: number,
   maxTokens?: number,
-  stopSequences?: string[]
+  stopSequences?: string[],
+  stream?: boolean
 }
 
 export interface DisplayOptions {
@@ -44,7 +45,8 @@ export type ApiType = `${Api}`
 
 export enum Api {
   ANTHROPIC = 'anthropic',
-  OPENAI = 'openai'
+  OPENAI = 'openai',
+  GOOGLEAI = 'googleai'
 }
 
 export interface Model {

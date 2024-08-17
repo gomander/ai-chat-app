@@ -4,6 +4,7 @@ import {
 } from '$lib/utils/common'
 import { generateOpenaiResponse } from '$lib/server/openai'
 import { generateAnthropicResponse } from '$lib/server/anthropic'
+import { generateGoogleaiResponse } from '$lib/server/googleai'
 import models, { getDefaultModel } from '$lib/data/models'
 import { DEFAULT_API } from '$lib/data/constants'
 import { Api, type ApiMessage, type ApiType, type Model } from '$types/common'
@@ -96,6 +97,8 @@ function generateResponse(
       return generateAnthropicResponse(messages, model, options)
     case Api.OPENAI:
       return generateOpenaiResponse(messages, model, options)
+    case Api.GOOGLEAI:
+      return generateGoogleaiResponse(messages, model, options)
     default:
       throw new Error('Invalid API')
   }

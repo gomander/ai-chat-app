@@ -2,7 +2,7 @@
   "name": "ai-chat-app",
   "description": "A work-in-progress AI chat app built with Svelte 5 that uses OpenAI and Anthropic APIs.",
   "author": "Gunnar Omander <gunnar@gomander.dev> (https://gomander.dev)",
-  "homepage": "https://github.com/gomander/chatbot",
+  "homepage": "https://github.com/gomander/ai-chat-app",
   "version": "0.0.1",
   "license": "GPL-3.0",
   "scripts": {
@@ -16,13 +16,14 @@
     "node": ">=20.6"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "~0.26.0",
+    "@anthropic-ai/sdk": "~0.26.1",
+    "@google/generative-ai": "^0.17.0",
     "browser-fs-access": "^0.35.0",
     "dompurify": "^3.1.6",
     "gpt-tokenizer": "^2.2.1",
     "highlight.js": "^11.10.0",
     "marked": "^14.0.0",
-    "openai": "^4.55.7"
+    "openai": "^4.56.0"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^2.10.2",
@@ -33,24 +34,24 @@
     "@tailwindcss/forms": "~0.5.7",
     "@tailwindcss/typography": "~0.5.14",
     "@types/dompurify": "^3.0.5",
-    "@types/node": "^20.14.15",
+    "@types/node": "^20.15.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
-    "svelte": "^5.0.0-next.221",
+    "svelte": "^5.0.0-next.224",
     "svelte-check": "^3.8.5",
     "tailwindcss": "^3.4.10",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4",
-    "vite": "^5.4.0",
+    "vite": "^5.4.1",
     "vite-plugin-tailwind-purgecss": "~0.3.3"
   },
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gomander/chatbot.git"
+    "url": "https://github.com/gomander/ai-chat-app.git"
   },
   "bugs": {
-    "url": "https://github.com/gomander/chatbot/issues",
+    "url": "https://github.com/gomander/ai-chat-app/issues",
     "email": "gunnar@gomander.dev"
   },
   "private": true

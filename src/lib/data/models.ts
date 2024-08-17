@@ -60,21 +60,31 @@ const anthropicModels: Record<string, Model> = {
   }
 }
 
-// const googleaiModels: Record<string, Model> = {
-//   'gemini-pro': {
-//     name: 'Gemini Pro',
-//     id: 'gemini-pro',
-//     maxTokens: {
-//       input: 30720,
-//       output: 2048
-//     },
-//     maxTemperature: 1
-//   }
-// }
+const googleaiModels: Record<string, Model> = {
+  'gemini-1.5-flash': {
+    name: 'Gemini 1.5 Flash',
+    id: 'gemini-1.5-flash',
+    maxTokens: {
+      input: 1048576,
+      output: 8192
+    },
+    maxTemperature: 1
+  },
+  'gemini-1.5-pro': {
+    name: 'Gemini 1.5 Pro',
+    id: 'gemini-1.5-pro',
+    maxTokens: {
+      input: 2097152,
+      output: 8192
+    },
+    maxTemperature: 1
+  }
+}
 
 const models: Record<ApiType, Record<string, Model>> = {
   openai: openaiModels,
-  anthropic: anthropicModels
+  anthropic: anthropicModels,
+  googleai: googleaiModels
 }
 
 export function getDefaultModel(api: ApiType): { key: string, model: Model } {

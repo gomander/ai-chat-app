@@ -11,7 +11,8 @@
 
   const apis = [
     { label: 'OpenAI', value: Api.OPENAI },
-    { label: 'Anthropic', value: Api.ANTHROPIC }
+    { label: 'Anthropic', value: Api.ANTHROPIC },
+    { label: 'GoogleAI', value: Api.GOOGLEAI }
   ]
 
   let { open = $bindable(false) }: { open: boolean } = $props()
@@ -24,6 +25,7 @@
   let maxTokens = $state<number>()
   let temperature = $state<number>()
   let stopSequencesString = $state<string>()
+  let stream = $state(DEFAULT_API_OPTIONS.stream)
 
   let modelMaxTokens = $derived(models[api][model]?.maxTokens.output)
   let modelMaxTemperature = $derived(models[api][model]?.maxTemperature)
@@ -38,6 +40,7 @@
       maxTokens = chatStore.chat.apiOptions.maxTokens
       temperature = chatStore.chat.apiOptions.temperature
       stopSequencesString = chatStore.chat.apiOptions.stopSequences?.join(', ')
+      stream = chatStore.chat.apiOptions.stream
     } else {
       dialog?.close()
     }
@@ -82,7 +85,8 @@
         .split(',')
         .map(string => string.trim().replaceAll('<escaped-comma>', ','))
         .filter(string => string)
-        .slice(0, 3)
+        .slice(0, 3),
+      stream: api !== Api.GOOGLEAI ? stream : false
     }
     chatStore.chat.apiOptions = newApiOptions
     const newDisplayOptions = { name }
@@ -243,6 +247,18 @@
                   class="input"
                 >
               </label>
+
+              {#if api !== Api.GOOGLEAI}
+                <label class="label flex items-center gap-2 space-y-0">
+                  <input
+                    type="checkbox"
+                    name="stream"
+                    bind:checked={stream}
+                    class="checkbox"
+                  >
+                  <span>Stream</span>
+                </label>
+              {/if}
 
               <button
                 class="btn variant-filled-surface"

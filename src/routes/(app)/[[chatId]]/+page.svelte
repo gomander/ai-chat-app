@@ -54,17 +54,20 @@
           messages: chatStore.chat.messages.map(message => ({
             role: message.role, content: message.content
           })),
-          ...chatStore.chat.apiOptions,
-          stream: true
+          ...chatStore.chat.apiOptions
         })
       })
       if (!response.ok || !response.body) {
         throw new Error('Failed to fetch')
       }
       loading = false
-      const interval = setInterval(scrollToBottom, 200)
-      await streamResponse(response.body, answer, chatStore.chat.apiOptions.api)
-      clearInterval(interval)
+      if (chatStore.chat.apiOptions.stream) {
+        const interval = setInterval(scrollToBottom, 200)
+        await streamResponse(response.body, answer, chatStore.chat.apiOptions.api)
+        clearInterval(interval)
+      } else {
+        answer.content = await response.text()
+      }
     } catch (error) {
       console.error(error)
       loading = false
