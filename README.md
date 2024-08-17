@@ -4,7 +4,7 @@ This app is a simple but customizable AI chat app that aims to give the user as 
 
 ## Features
 
-- Swap between OpenAI and Anthropic models at any time, even mid-conversation
+- Swap between OpenAI, Anthropic, and GoogleAI models at any time, even mid-conversation
 - Input your own system prompt
 - Response streaming and option to regenerate responses
 - No account needed, all your conversations are stored locally and are portable
@@ -24,11 +24,12 @@ This app is a simple but customizable AI chat app that aims to give the user as 
 - [x] Regenerating responses
 - [x] Automatic chat naming
 - [x] Export and import conversations
+- [x] GoogleAI integration (non-streaming)
 - [ ] One-click experiences
 - [ ] Chat icons
 - [ ] Message editing
-- [ ] GoogleAI integration
 - [ ] Switch between regenerated responses
+- [ ] GoogleAI streaming
 - [ ] Vision
 - [ ] Image generation?
 
