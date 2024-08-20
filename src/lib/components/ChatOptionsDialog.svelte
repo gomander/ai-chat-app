@@ -207,7 +207,7 @@
           <svelte:fragment slot="iconClosed"><Icon name="caretUp" /></svelte:fragment>
           <svelte:fragment slot="iconOpen"><Icon name="caretDown" /></svelte:fragment>
           <svelte:fragment slot="content">
-            <div class="pt-2 flex flex-col gap-2">
+            <div class="pt-2 -mx-4 flex flex-col gap-2">
               <div class="flex gap-2">
                 <label class="label">
                   <span>Max tokens (1 - {modelMaxTokens})</span>

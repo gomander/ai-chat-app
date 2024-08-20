@@ -160,7 +160,7 @@
   <div
     onscroll={handleScroll}
     bind:this={messagesContainer}
-    class="relative flex flex-col gap-2 overflow-y-scroll pt-16 -mx-2 w-full"
+    class="relative flex flex-col gap-2 overflow-y-scroll pt-16 w-full"
   >
     {#each chatStore.chat.messages as message (message.id)}
       <ChatMessage {...message} />

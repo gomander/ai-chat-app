@@ -10,7 +10,7 @@
 
 <form
   onsubmit={onSubmit}
-  class="absolute bottom-2 w-full -mx-2 flex justify-center gap-2"
+  class="absolute bottom-2 w-full px-2 flex justify-center gap-2"
 >
   <input
     type="text"
