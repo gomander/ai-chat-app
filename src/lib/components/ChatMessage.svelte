@@ -32,7 +32,7 @@
 <style>
   .message :global(pre) {
     background-color: rgb(var(--color-surface-900));
-    color: rgb(var(--color-surface-100));
+    color: rgb(var(--color-surface-50));
     padding: 0.5rem;
     border-radius: 0.25rem;
     overflow-x: auto;
@@ -46,7 +46,7 @@
 
   .message :global(code) {
     background-color: rgb(var(--color-surface-900));
-    color: rgb(var(--color-surface-100));
+    color: rgb(var(--color-surface-50));
     padding: 0.25rem;
     border-radius: 0.25rem;
   }
@@ -81,10 +81,6 @@
     border-color: rgb(var(--color-primary-200)) transparent transparent;
   }
 
-  .message-user::after:where(.dark) {
-    border-color: rgb(var(--color-primary-800)) transparent transparent
-  }
-
   .message-assistant {
     border-top-left-radius: 0;
   }
@@ -95,7 +91,13 @@
     border-color: rgb(var(--color-surface-200)) transparent transparent;
   }
 
-  .message-assistant::after:where(.dark) {
-    border-color: rgb(var(--color-surface-800)) transparent transparent;
+  @media (prefers-color-scheme: dark) {
+    .message-user::after {
+      border-color: rgb(var(--color-primary-800)) transparent transparent
+    }
+
+      .message-assistant::after {
+      border-color: rgb(var(--color-surface-800)) transparent transparent;
+    }
   }
 </style>
