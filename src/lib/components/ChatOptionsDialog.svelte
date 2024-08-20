@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { slide } from 'svelte/transition'
   import { goto } from '$app/navigation'
-  import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
   import { fileSave } from 'browser-fs-access'
   import chatStore from '$lib/stores/chat.svelte'
   import chatsStore from '$lib/stores/chats.svelte'
@@ -29,6 +29,8 @@
 
   let modelMaxTokens = $derived(models[api][model]?.maxTokens.output)
   let modelMaxTemperature = $derived(models[api][model]?.maxTemperature)
+
+  let showAdvancedSettings = $state(false)
 
   $effect(() => {
     if (open) {
@@ -198,79 +200,80 @@
         ></textarea>
       </label>
 
-      <Accordion class="card p-2 text-token">
-        <AccordionItem>
-          <svelte:fragment slot="lead"><Icon name="settings" /></svelte:fragment>
-          <svelte:fragment slot="summary">
-            <p class="font-bold">Advanced options</p>
-          </svelte:fragment>
-          <svelte:fragment slot="iconClosed"><Icon name="caretUp" /></svelte:fragment>
-          <svelte:fragment slot="iconOpen"><Icon name="caretDown" /></svelte:fragment>
-          <svelte:fragment slot="content">
-            <div class="pt-2 -mx-4 flex flex-col gap-2">
-              <div class="flex gap-2">
-                <label class="label">
-                  <span>Max tokens (1 - {modelMaxTokens})</span>
-                  <input
-                    type="number"
-                    name="maxTokens"
-                    min={1}
-                    max={modelMaxTokens}
-                    bind:value={maxTokens}
-                    placeholder="Not set"
-                    class="input"
-                  >
-                </label>
+      <div class="card p-2 flex flex-col gap-2">
+        <button
+          type="button"
+          class="btn variant-ghost-surface"
+          onclick={() => showAdvancedSettings = !showAdvancedSettings}
+        >
+          <span class="font-bold">Advanced options</span>
+          <Icon name={showAdvancedSettings ? 'caretUp' : 'caretDown'} />
+        </button>
 
-                <label class="label">
-                  <span>Temperature (0 - {modelMaxTemperature})</span>
-                  <input
-                    type="number"
-                    name="temperature"
-                    min={0}
-                    max={modelMaxTemperature}
-                    step={0.1}
-                    bind:value={temperature}
-                    placeholder="Not set"
-                    class="input"
-                  >
-                </label>
-              </div>
-
+        {#if showAdvancedSettings}
+          <div class="flex flex-col gap-2" in:slide={{ duration: 200 }} out:slide={{ duration: 200 }}>
+            <div class="flex gap-2">
               <label class="label">
-                <span>Stop sequences (max 4, comma separated)</span>
+                <span>Max tokens (1 - {modelMaxTokens})</span>
                 <input
-                  type="text"
-                  name="stopSequences"
-                  bind:value={stopSequencesString}
-                  placeholder="None set"
+                  type="number"
+                  name="maxTokens"
+                  min={1}
+                  max={modelMaxTokens}
+                  bind:value={maxTokens}
+                  placeholder="Not set"
                   class="input"
                 >
               </label>
 
-              {#if api !== Api.GOOGLEAI}
-                <label class="label flex items-center gap-2 space-y-0">
-                  <input
-                    type="checkbox"
-                    name="stream"
-                    bind:checked={stream}
-                    class="checkbox"
-                  >
-                  <span>Stream</span>
-                </label>
-              {/if}
-
-              <button
-                class="btn variant-filled-surface"
-                onclick={downloadChat}
-              >
-                <Icon name="download" />
-                <span>Download chat</span>
-              </button>
+              <label class="label">
+                <span>Temperature (0 - {modelMaxTemperature})</span>
+                <input
+                  type="number"
+                  name="temperature"
+                  min={0}
+                  max={modelMaxTemperature}
+                  step={0.1}
+                  bind:value={temperature}
+                  placeholder="Not set"
+                  class="input"
+                >
+              </label>
             </div>
-          </svelte:fragment>
-        </AccordionItem>
-      </Accordion>
+
+            <label class="label">
+              <span>Stop sequences (max 4, comma separated)</span>
+              <input
+                type="text"
+                name="stopSequences"
+                bind:value={stopSequencesString}
+                placeholder="None set"
+                class="input"
+              >
+            </label>
+
+            {#if api !== Api.GOOGLEAI}
+              <label class="label flex items-center gap-2 space-y-0">
+                <input
+                  type="checkbox"
+                  name="stream"
+                  bind:checked={stream}
+                  class="checkbox"
+                >
+                <span>Stream</span>
+              </label>
+            {/if}
+
+            <button
+              class="btn variant-filled-surface"
+              onclick={downloadChat}
+            >
+              <Icon name="download" />
+              <span>Download chat</span>
+            </button>
+          </div>
+        {/if}
+      </div>
       <div class="flex gap-2">
         <button
           type="button"
