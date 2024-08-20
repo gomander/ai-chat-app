@@ -18,25 +18,21 @@
 </script>
 
 <div
-  class="relative wrapper-{role}"
+  class="relative {role === 'user' ? 'self-end' : ''}"
   aria-label="{role} message"
 >
   <div
     bind:this={messageContentDiv}
-    class="p-3 mx-2 rounded-2xl max-w-4xl flex flex-col gap-2 overflow-x-auto message message-{role}"
+    class="p-3 mx-2 rounded-2xl max-w-4xl flex flex-col gap-2 overflow-x-auto message message-{role} {role === 'user' ? 'preset-filled-primary-200-800' : 'preset-filled-surface-200-800'}"
   >
     {@html cleanHtml}
   </div>
 </div>
 
 <style>
-  .wrapper-user {
-    align-self: flex-end;
-  }
-
   .message :global(pre) {
-    background-color: rgb(var(--color-surface-700));
-    color: rgb(var(--on-surface));
+    background-color: rgb(var(--color-surface-900));
+    color: rgb(var(--color-surface-100));
     padding: 0.5rem;
     border-radius: 0.25rem;
     overflow-x: auto;
@@ -49,8 +45,8 @@
   }
 
   .message :global(code) {
-    background-color: rgb(var(--color-surface-700));
-    color: rgb(var(--on-surface));
+    background-color: rgb(var(--color-surface-900));
+    color: rgb(var(--color-surface-100));
     padding: 0.25rem;
     border-radius: 0.25rem;
   }
@@ -76,26 +72,30 @@
   }
 
   .message-user {
-    background-color: rgb(var(--color-primary-500));
-    color: rgb(var(--on-primary));
     border-top-right-radius: 0;
   }
 
   .message-user::after {
     left: auto;
     right: 0;
-    border-color: rgb(var(--color-primary-500)) transparent transparent;
+    border-color: rgb(var(--color-primary-200)) transparent transparent;
+  }
+
+  .message-user::after:where(.dark) {
+    border-color: rgb(var(--color-primary-800)) transparent transparent
   }
 
   .message-assistant {
-    background-color: rgb(var(--color-surface-500));
-    color: rgb(var(--on-surface));
     border-top-left-radius: 0;
   }
 
   .message-assistant::after {
     left: 0;
     right: auto;
-    border-color: rgb(var(--color-surface-500)) transparent transparent;
+    border-color: rgb(var(--color-surface-200)) transparent transparent;
+  }
+
+  .message-assistant::after:where(.dark) {
+    border-color: rgb(var(--color-surface-800)) transparent transparent;
   }
 </style>

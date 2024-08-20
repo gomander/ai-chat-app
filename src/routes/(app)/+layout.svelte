@@ -18,7 +18,7 @@
 <div class="h-screen flex flex-col">
   <button
     onclick={() => drawerOpen = !drawerOpen}
-    class="btn-icon variant-glass fixed top-2 left-2 z-10"
+    class="btn-icon preset-tonal fixed top-2 left-2 z-10"
     title="Menu"
     aria-label="Open menu"
   >

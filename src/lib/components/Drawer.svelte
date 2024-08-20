@@ -65,7 +65,7 @@
 
   <div
     bind:this={drawerElement}
-    class="fixed-overlay drawer flex flex-col gap-2"
+    class="preset-filled-surface-50-950 fixed-overlay drawer flex flex-col gap-2"
     transition:fly={{ x: -320 }}
   >
     <div class="flex justify-between items-center">
@@ -73,7 +73,7 @@
 
       <button
         onclick={() => open = false}
-        class="btn-icon variant-soft-primary"
+        class="btn-icon preset-filled-surface-100-900"
       >
         <Icon name="close" />
       </button>
@@ -84,8 +84,8 @@
         href={`/${chat.id}`}
         class="btn {
           chatStore.id === chat.id
-            ? 'variant-glass-primary'
-            : 'hover:variant-ghost-primary'
+            ? 'preset-outlined-primary-500'
+            : 'preset-outlined-surface-100-900'
         }"
       >
         {chat.displayOptions.name || 'New chat'}
@@ -94,14 +94,14 @@
 
     <a
       href="/"
-      class="btn variant-filled-primary"
+      class="btn preset-filled-primary-500"
     >
       <Icon name="plus" />
       <span>New chat</span>
     </a>
 
     <button
-      class="btn variant-filled-surface"
+      class="btn preset-filled-surface-100-900"
       onclick={uploadChat}
     >
       <Icon name="upload" />
@@ -128,7 +128,6 @@
     overflow-y: auto;
     width: 20rem;
     max-width: 75%;
-    background-color: rgb(var(--color-surface-800));
     padding: 1rem;
   }
 </style>

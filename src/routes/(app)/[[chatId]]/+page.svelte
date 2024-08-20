@@ -137,7 +137,7 @@
 
 <button
   onclick={() => optionsOpen = true}
-  class="btn-icon variant-glass fixed top-2 right-2 z-10"
+  class="btn-icon preset-tonal fixed top-2 right-2 z-10"
   title="Settings"
   aria-label="Open settings"
 >
@@ -176,7 +176,7 @@
     {:else if chatStore.chat.messages.at(-1)?.role === Role.ASSISTANT}
       <button
         onclick={regenerateResponse}
-        class="btn-icon btn-icon-sm"
+        class="btn-icon ml-2"
         title="Regenerate response"
         aria-label="Regenerate response"
       >
@@ -185,7 +185,7 @@
     {:else if chatStore.chat.messages.at(-1)?.role === Role.USER}
       <button
         onclick={generateResponse}
-        class="btn-icon btn-icon-sm"
+        class="btn-icon ml-2"
         title="Generate response"
         aria-label="Generate response"
       >
@@ -199,7 +199,7 @@
       >
         <button
           onclick={scrollToBottom}
-          class="btn-icon btn-icon-sm variant-glass-primary"
+          class="btn-icon preset-filled-primary-500"
           title="Scroll to bottom"
           aria-label="Scroll to bottom"
         >

@@ -26,8 +26,7 @@
     "openai": "^4.56.0"
   },
   "devDependencies": {
-    "@skeletonlabs/skeleton": "^2.10.2",
-    "@skeletonlabs/tw-plugin": "~0.4.0",
+    "@skeletonlabs/skeleton": "^3.0.0-next.3",
     "@sveltejs/adapter-node": "^5.2.2",
     "@sveltejs/kit": "^2.5.24",
     "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",

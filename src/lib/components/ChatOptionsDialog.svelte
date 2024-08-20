@@ -132,14 +132,14 @@
 <dialog
   onclick={handleClick}
   bind:this={dialog}
-  class="bg-surface-100-800-token text-on-surface-token"
+  class="preset-filled-surface-50-950"
 >
   <div class="flex flex-col gap-2">
     <header class="flex justify-between items-center">
       <h2 class="text-2xl">Chat Options</h2>
 
       <button
-        class="btn-icon variant-soft"
+        class="btn-icon preset-filled-surface-100-900"
         onclick={() => open = false}
       >
         <Icon name="close" />
@@ -203,7 +203,7 @@
       <div class="card p-2 flex flex-col gap-2">
         <button
           type="button"
-          class="btn variant-ghost-surface"
+          class="btn preset-filled-surface-100-900"
           onclick={() => showAdvancedSettings = !showAdvancedSettings}
         >
           <span class="font-bold">Advanced options</span>
@@ -265,7 +265,7 @@
             {/if}
 
             <button
-              class="btn variant-filled-surface"
+              class="btn preset-filled-surface-100-900"
               onclick={downloadChat}
             >
               <Icon name="download" />
@@ -278,12 +278,12 @@
         <button
           type="button"
           onclick={deleteCurrentChat}
-          class="btn variant-filled-error"
+          class="btn preset-filled-error-500"
         >
           <Icon name="delete" />
           <span>Delete chat</span>
         </button>
-        <button class="btn variant-filled-primary flex-grow">
+        <button class="btn preset-filled-primary-500 flex-grow">
           <Icon name="save" />
           <span>Save</span>
         </button>

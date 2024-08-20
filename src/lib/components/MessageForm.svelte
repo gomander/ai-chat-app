@@ -10,7 +10,7 @@
 
 <form
   onsubmit={onSubmit}
-  class="absolute bottom-2 w-full px-2 flex justify-center gap-2"
+  class="absolute bottom-2 w-full px-2 flex justify-center items-center gap-2"
 >
   <input
     type="text"
@@ -20,13 +20,13 @@
     minlength="2"
     placeholder="Type a message"
     {disabled}
-    class="input shadow drop-shadow max-w-4xl"
+    class="input preset-filled-surface-100-900 shadow drop-shadow max-w-4xl"
   >
 
   <button
     type="submit"
     {disabled}
-    class="btn-icon variant-filled-primary flex-shrink-0 shadow drop-shadow"
+    class="btn-icon preset-filled-primary-500 flex-shrink-0 shadow drop-shadow"
     title="Send message"
     aria-label="Send message"
   >
