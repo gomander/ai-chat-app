@@ -5,9 +5,8 @@ import * as themes from '@skeletonlabs/skeleton/themes'
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'selector',
+  darkMode: 'media',
   content: ['./src/**/*.{html,js,svelte,ts}'],
-  theme: { extend: {} },
   plugins: [
     forms,
     typography,

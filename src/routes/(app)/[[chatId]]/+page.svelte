@@ -137,7 +137,7 @@
 
 <button
   onclick={() => optionsOpen = true}
-  class="btn-icon preset-tonal fixed top-2 right-2 z-10"
+  class="btn-icon preset-filled-surface-100-900 fixed top-4 right-4 z-10"
   title="Settings"
   aria-label="Open settings"
 >

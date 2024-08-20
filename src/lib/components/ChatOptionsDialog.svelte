@@ -131,6 +131,7 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <dialog
   onclick={handleClick}
+  onkeydown={e => e.key === 'Escape' && (open = false)}
   bind:this={dialog}
   class="preset-filled-surface-50-950"
 >
@@ -206,7 +207,7 @@
           class="btn preset-filled-surface-100-900"
           onclick={() => showAdvancedSettings = !showAdvancedSettings}
         >
-          <span class="font-bold">Advanced options</span>
+          <span>Advanced options</span>
           <Icon name={showAdvancedSettings ? 'caretUp' : 'caretDown'} />
         </button>
 
