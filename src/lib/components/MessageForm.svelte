@@ -30,7 +30,7 @@
     placeholder="Type a message"
     onkeydown={handleKeyDown}
     {disabled}
-    class="textarea preset-filled-surface-100-900 shadow drop-shadow rounded-r-none max-h-32"
+    class="textarea preset-filled-surface-100-900 shadow drop-shadow rounded-r-none max-h-24"
     use:autosize
     rows={1}
   ></textarea>
