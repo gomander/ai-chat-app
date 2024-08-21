@@ -1,4 +1,6 @@
 <script lang="ts">
+  // @ts-ignore
+  import autosize from 'svelte-autosize'
   import Icon from '$lib/components/Icon.svelte'
   import type { FormSubmitEvent } from '$types/common'
 
@@ -6,27 +8,37 @@
     onSubmit: (e: FormSubmitEvent) => void,
     disabled: boolean
   } = $props()
+
+  let form = $state<HTMLFormElement>()
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      form?.requestSubmit()
+    }
+  }
 </script>
 
 <form
+  bind:this={form}
   onsubmit={onSubmit}
-  class="absolute bottom-2 w-full px-2 flex justify-center items-center gap-2"
+  class="absolute bottom-2 left-1/2 -translate-x-1/2 w-full max-w-4xl grid grid-cols-[1fr_auto] px-1"
 >
-  <input
-    type="text"
+  <textarea
     name="newMessage"
     autocomplete="off"
-    required
-    minlength="2"
     placeholder="Type a message"
+    onkeydown={handleKeyDown}
     {disabled}
-    class="input preset-filled-surface-100-900 shadow drop-shadow max-w-4xl"
-  >
+    class="textarea preset-filled-surface-100-900 shadow drop-shadow rounded-r-none max-h-32"
+    use:autosize
+    rows={1}
+  ></textarea>
 
   <button
     type="submit"
     {disabled}
-    class="btn-icon preset-filled-primary-500 flex-shrink-0 shadow drop-shadow"
+    class="btn-icon preset-filled-primary-500 shadow drop-shadow w-auto h-full rounded-l-none ring ring-primary-500"
     title="Send message"
     aria-label="Send message"
   >
