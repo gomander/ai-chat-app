@@ -10,15 +10,6 @@ const openaiModels: Record<string, Model> = {
     },
     maxTemperature: 2
   },
-  'gpt-3.5-turbo': {
-    name: 'GPT-3.5 Turbo',
-    id: 'gpt-3.5-turbo',
-    maxTokens: {
-      input: 16385,
-      output: 4096
-    },
-    maxTemperature: 2
-  },
   'gpt-4o': {
     name: 'GPT-4o',
     id: 'gpt-4o',
