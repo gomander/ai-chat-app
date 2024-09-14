@@ -6,9 +6,9 @@ import { Api, Role, type ApiMessage } from '$types/common'
 export async function POST({ request }) {
   const reqData = await request.json() as unknown
   try {
-    const { messages, systemPrompt: userSystemPrompt } = getSafeData(reqData)
+    const { messages, userSystemPrompt } = getSafeData(reqData)
     const content = (
-      systemPrompt ? `The user's given system prompt is """${userSystemPrompt}"""\n\n` : ''
+      userSystemPrompt ? `The user's given system prompt is """${userSystemPrompt}"""\n\n` : ''
     ) + messages.map(message => `${message.role}: ${message.content}`).join('\n')
     const response = await generateOpenaiResponse(
       [{ role: Role.USER, content }],
@@ -22,13 +22,13 @@ export async function POST({ request }) {
   }
 }
 
-function getSafeData(data: unknown): { messages: ApiMessage[], systemPrompt?: string } {
+function getSafeData(data: unknown): { messages: ApiMessage[], userSystemPrompt?: string } {
   if (!data || typeof data !== 'object' || !('messages' in data)) {
     throw new Error('Invalid data')
   }
   assertApiMessages(data.messages)
   if ('systemPrompt' in data && typeof data.systemPrompt === 'string') {
-    return { messages: data.messages, systemPrompt: data.systemPrompt }
+    return { messages: data.messages, userSystemPrompt: data.systemPrompt }
   }
   return { messages: data.messages }
 }
