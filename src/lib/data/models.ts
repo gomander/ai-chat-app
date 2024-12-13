@@ -24,16 +24,16 @@ const openaiModels: Record<string, Model> = {
 const anthropicModels: Record<string, Model> = {
   'claude-3-haiku': {
     name: 'Claude 3 Haiku',
-    id: 'claude-3-haiku-20240307',
+    id: 'claude-3-haiku-latest',
     maxTokens: {
       input: 200000,
       output: 4096
     },
     maxTemperature: 1
   },
-  'claude-3-sonnet': {
-    name: 'Claude 3 Sonnet',
-    id: 'claude-3-sonnet-20240229',
+  'claude-3.5-sonnet': {
+    name: 'Claude 3.5 Sonnet',
+    id: 'claude-3-5-sonnet-latest',
     maxTokens: {
       input: 200000,
       output: 4096
@@ -42,7 +42,7 @@ const anthropicModels: Record<string, Model> = {
   },
   'claude-3-opus': {
     name: 'Claude 3 Opus',
-    id: 'claude-3-opus-20240229',
+    id: 'claude-3-opus-latest',
     maxTokens: {
       input: 200000,
       output: 4096
