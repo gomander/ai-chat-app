@@ -1,5 +1,4 @@
 <script lang="ts">
-  // @ts-ignore
   import autosize from 'svelte-autosize'
   import Icon from '$lib/components/Icon.svelte'
   import type { FormSubmitEvent } from '$types/common'
