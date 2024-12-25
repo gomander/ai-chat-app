@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onNavigate, goto } from '$app/navigation'
+  import { MediaQuery } from 'svelte/reactivity'
   import { fly, fade } from 'svelte/transition'
+  import { onNavigate, goto } from '$app/navigation'
   import { fileOpen } from 'browser-fs-access'
   import chatStore from '$lib/stores/chat.svelte'
   import chatsStore from '$lib/stores/chats.svelte'
@@ -10,10 +11,14 @@
 
   let drawerElement = $state<HTMLDivElement>()
 
-  let sortedChats = $derived(chatsStore.chats.toSorted((a, b) => b.updatedAt - a.updatedAt))
+  let sortedChats = $derived(
+    chatsStore.chats.toSorted((a, b) => b.updatedAt - a.updatedAt)
+  )
 
   onNavigate(() => {
-    open = false
+    if (!large) {
+      open = false
+    }
   })
 
   $effect(() => {
@@ -24,6 +29,8 @@
       window.removeEventListener('keydown', handleKeyDown)
     }
   })
+
+  const large = new MediaQuery('min-width: 1024px')
 
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
@@ -129,5 +136,11 @@
     width: 20rem;
     max-width: 75%;
     padding: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .drawer-backdrop {
+      display: none;
+    }
   }
 </style>

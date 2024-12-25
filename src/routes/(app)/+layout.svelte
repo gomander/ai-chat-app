@@ -1,10 +1,14 @@
 <script lang="ts">
+  import { MediaQuery } from 'svelte/reactivity'
   import chatsStore from '$lib/stores/chats.svelte'
   import Drawer from '$lib/components/Drawer.svelte'
   import Icon from '$lib/components/Icon.svelte'
 
   let { children, data } = $props()
-  let drawerOpen = $state(false)
+
+  const large = new MediaQuery('min-width: 1024px')
+
+  let drawerOpen = $state(large.current)
 
   chatsStore.chats = data.chats
 
@@ -25,7 +29,7 @@
     <Icon name="menu" />
   </button>
 
-  <main class="flex-1 flex flex-col h-px">
+  <main class="flex-1 flex flex-col h-px {drawerOpen && large.current ? 'pl-80' : ''}">
     {@render children()}
   </main>
 </div>
